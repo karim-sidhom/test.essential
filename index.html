@@ -329,8 +329,8 @@ function startGPS(){
       document.getElementById('gps-txt').textContent=msgs[err&&err.code]||'⚠️ خطأ GPS';
       document.getElementById('gps-dot').className='gps-dot red';
       if(err&&err.code===1){navigator.geolocation.clearWatch(gpsWatchId);gpsWatchId=null;}
-      document.getElementById('manual-wrap').style.display='flex';
-      document.getElementById('mode-select').value='manual';
+      const mw=document.getElementById('manual-wrap');if(mw)mw.style.display='flex';
+      const ms=document.getElementById('mode-select');if(ms)ms.value='manual';
     },
     GPS_OPT
   );
@@ -527,6 +527,59 @@ const SERVICE_NAMES={
   fuel:{ar:'تعبية الوقود',fr:'faire le plein',en:'fill up'},
 };
 
+// ── Avatar (cercle vidéo affiché pendant que l'app parle) ──
+function showAvatar(){
+  const w=document.getElementById('avatar-wrap');
+  if(!w)return;
+  w.classList.add('show');
+  const v=document.getElementById('avatar-video');
+  if(v){try{v.currentTime=0;const p=v.play();if(p&&p.catch)p.catch(()=>{});}catch(_){}}
+}
+function hideAvatar(){
+  const w=document.getElementById('avatar-wrap');
+  if(!w)return;
+  w.classList.remove('show');
+  const v=document.getElementById('avatar-video');
+  if(v){try{v.pause();}catch(_){}}
+}
+
+// ── Lecture vocale robuste : charge les voix, survit à une voix manquante, évite le bug cancel/speak ──
+function playSpeech(items,onDone){
+  const synth=window.speechSynthesis;
+  if(!synth){if(onDone)onDone();return;}
+  function pickVoice(lang){
+    const vs=synth.getVoices()||[];
+    const base=(lang||'').slice(0,2).toLowerCase();
+    return vs.find(v=>v.lang&&v.lang.toLowerCase()===lang.toLowerCase())
+        || vs.find(v=>v.lang&&v.lang.toLowerCase().startsWith(base))
+        || null;
+  }
+  function run(){
+    let i=0;
+    (function next(){
+      if(i>=items.length){if(onDone)onDone();return;}
+      const it=items[i++];
+      const u=new SpeechSynthesisUtterance(it.text);
+      u.lang=it.lang;u.rate=it.rate||0.88;
+      const v=pickVoice(it.lang);if(v)u.voice=v;
+      let advanced=false;
+      const advance=()=>{if(advanced)return;advanced=true;clearTimeout(guard);next();};
+      const guard=setTimeout(()=>{try{synth.cancel();}catch(_){}advance();},Math.max(4000,it.text.length*90));
+      u.onend=advance;
+      u.onerror=advance;
+      try{synth.speak(u);}catch(_){advance();}
+    })();
+  }
+  try{synth.cancel();}catch(_){}
+  if((synth.getVoices()||[]).length===0){
+    let started=false;const go=()=>{if(started)return;started=true;run();};
+    synth.onvoiceschanged=go;
+    setTimeout(go,400); // secours si l'événement ne se déclenche pas
+  }else{
+    setTimeout(run,90); // évite le bug cancel/speak de Chrome
+  }
+}
+
 function speakResults(){
   if(!window.speechSynthesis){alert('الصوت غير مدعوم');return;}
 
@@ -578,14 +631,11 @@ function speakResults(){
   const text_en=`I have ${totalTxt_en}. I want to ${available.map(t=>SERVICE_NAMES[t].en).join(', ')}. OK — here is your route: ${steps_en} Total estimated time: ${totalTxt_en}.`;
 
   showAvatar();
-  window.speechSynthesis.cancel();
-  const uAr=new SpeechSynthesisUtterance(text_ar);uAr.lang='ar-SA';uAr.rate=0.88;
-  const uFr=new SpeechSynthesisUtterance(text_fr);uFr.lang='fr-FR';uFr.rate=0.88;
-  const uEn=new SpeechSynthesisUtterance(text_en);uEn.lang='en-US';uEn.rate=0.88;
-  uAr.onend=()=>window.speechSynthesis.speak(uFr);
-  uFr.onend=()=>window.speechSynthesis.speak(uEn);
-  uEn.onend=hideAvatar;
-  window.speechSynthesis.speak(uAr);
+  playSpeech([
+    {text:text_ar,lang:'ar-SA',rate:0.88},
+    {text:text_fr,lang:'fr-FR',rate:0.88},
+    {text:text_en,lang:'en-US',rate:0.88}
+  ],hideAvatar);
 }
 
 // ══ LITE EDITION ══
@@ -664,7 +714,11 @@ let itinRecognition=null;
 
 function startItineraryListen(){
   const SR=window.SpeechRecognition||window.webkitSpeechRecognition;
-  if(!SR){alert('استخدم Chrome');return;}
+  if(!SR){alert('متصفحك لا يدعم الميكروفون. استخدم Google Chrome.');return;}
+  if(!window.isSecureContext){
+    alert('الميكروفون يحتاج اتصال آمن (HTTPS). افتح الموقع عبر https:// وليس عبر ملف محلي.');
+    return;
+  }
   if(itinListening){stopItineraryListen();return;}
 
   const btn=document.getElementById('itin-btn');
@@ -682,30 +736,49 @@ function startItineraryListen(){
     const text=e.results[0][0].transcript;
     stopItineraryListen();
     // Confirm heard
-    window.speechSynthesis.cancel();
-    const conf=new SpeechSynthesisUtterance('سمعتك. ' );
-    conf.lang='ar-SA';conf.rate=0.88;
-    conf.onend=()=>processItineraryVoice(text);
-    window.speechSynthesis.speak(conf);
+    try{window.speechSynthesis.cancel();
+      const conf=new SpeechSynthesisUtterance('سمعتك. ');
+      conf.lang='ar-SA';conf.rate=0.88;
+      conf.onend=()=>processItineraryVoice(text);
+      conf.onerror=()=>processItineraryVoice(text);
+      window.speechSynthesis.speak(conf);
+    }catch(_){processItineraryVoice(text);}
   };
   itinRecognition.onerror=function(e){
     stopItineraryListen();
-    if(e.error==='no-speech'){
-      const u=new SpeechSynthesisUtterance('لم أسمعك، حاول مرة أخرى.');
-      u.lang='ar-SA';window.speechSynthesis.speak(u);
+    let msg='';
+    switch(e.error){
+      case 'no-speech':        msg='لم أسمعك، حاول مرة أخرى.';break;
+      case 'not-allowed':
+      case 'service-not-allowed': msg='الميكروفون مرفوض. اسمح بالوصول للميكروفون من إعدادات المتصفح.';break;
+      case 'audio-capture':    msg='لا يوجد ميكروفون متاح.';break;
+      case 'network':          msg='مشكلة في الاتصال بالإنترنت.';break;
+      case 'aborted':          return; // user/normal stop, stay silent
+      default:                 msg='حدث خطأ، حاول مرة أخرى.';
     }
+    try{const u=new SpeechSynthesisUtterance(msg);u.lang='ar-SA';window.speechSynthesis.speak(u);}catch(_){}
+    if(e.error==='not-allowed'||e.error==='service-not-allowed'){alert(msg);}
   };
   itinRecognition.onend=function(){if(itinListening)stopItineraryListen();};
 
-  // Unlock audio and speak greeting, then start mic
-  window.speechSynthesis.cancel();
-  const greet=new SpeechSynthesisUtterance('أسمعك. قل لي ماذا تريد أن تفعل وكم من الوقت عندك.');
-  greet.lang='ar-SA';greet.rate=0.88;
-  greet.onend=()=>{try{itinRecognition.start();}catch(e){stopItineraryListen();}};
-  greet.onerror=()=>{try{itinRecognition.start();}catch(e){stopItineraryListen();}};
-  // Fallback if TTS blocked
-  setTimeout(()=>{if(itinListening&&itinRecognition){try{itinRecognition.start();}catch(e){}}},4000);
-  window.speechSynthesis.speak(greet);
+  // IMPORTANT: start the mic immediately, inside the user gesture (click).
+  // Waiting for a TTS greeting to finish loses the gesture context and the
+  // browser then blocks the mic silently (esp. on mobile).
+  try{
+    itinRecognition.start();
+  }catch(e){
+    stopItineraryListen();
+    alert('تعذّر تشغيل الميكروفون: '+(e&&e.message?e.message:e));
+    return;
+  }
+
+  // Optional spoken greeting AFTER the mic is already live (non-blocking).
+  try{
+    window.speechSynthesis.cancel();
+    const greet=new SpeechSynthesisUtterance('أسمعك. قل لي ماذا تريد أن تفعل وكم من الوقت عندك.');
+    greet.lang='ar-SA';greet.rate=0.88;
+    window.speechSynthesis.speak(greet);
+  }catch(_){}
 }
 
 function stopItineraryListen(){
@@ -764,14 +837,11 @@ function processItineraryVoice(text){
   const txt_fr=`D'accord. Voici votre itinéraire: ${build('fr')} Total: ${t_fr}.`;
   const txt_en=`OK. Here is your route: ${build('en')} Total: ${t_en}.`;
 
-  window.speechSynthesis.cancel();
-  const uAr=new SpeechSynthesisUtterance(txt_ar);uAr.lang='ar-SA';uAr.rate=0.87;
-  const uFr=new SpeechSynthesisUtterance(txt_fr);uFr.lang='fr-FR';uFr.rate=0.87;
-  const uEn=new SpeechSynthesisUtterance(txt_en);uEn.lang='en-US';uEn.rate=0.87;
-  uAr.onend=()=>window.speechSynthesis.speak(uFr);
-  uFr.onend=()=>window.speechSynthesis.speak(uEn);
-  uEn.onend=hideAvatar;
-  window.speechSynthesis.speak(uAr);
+  playSpeech([
+    {text:txt_ar,lang:'ar-SA',rate:0.87},
+    {text:txt_fr,lang:'fr-FR',rate:0.87},
+    {text:txt_en,lang:'en-US',rate:0.87}
+  ],hideAvatar);
 }
 
 // ══ FESTIVE DAYS SYSTEM ══
