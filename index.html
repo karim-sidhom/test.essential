@@ -349,7 +349,15 @@ async function fetchService(type,lat,lon,r,ctrl){
   const url=`https://nominatim.openstreetmap.org/search?format=jsonv2&amenity=${AMENITIES[type]}&viewbox=${viewbox(lat,lon,r)}&bounded=1&limit=50&accept-language=ar`;
   const res=await fetch(url,{signal:ctrl.signal});
   if(!res.ok)throw new Error('err');
-  return res.json();
+  const places=await res.json();
+  if(type==='atm'){
+    try{
+      const url2=`https://nominatim.openstreetmap.org/search?format=jsonv2&amenity=bank&viewbox=${viewbox(lat,lon,r)}&bounded=1&limit=50&accept-language=ar`;
+      const res2=await fetch(url2,{signal:ctrl.signal});
+      if(res2.ok){const banks=await res2.json();return[...places,...banks];}
+    }catch(e){}
+  }
+  return places;
 }
 
 function normalizeResults(type,lat,lon,places){
@@ -363,15 +371,8 @@ function normalizeResults(type,lat,lon,places){
     items=items.filter(m=>{const n=m.name.toLowerCase();return!NON_MOSQUE.some(kw=>n.includes(kw));});
   }
   if(type==='atm'){
-    // STRICT: garder uniquement banque/poste — rien d'autre
-    items=items.filter(m=>{
-      const n=m.name.toLowerCase();
-      // Exclure explicitement les lieux non-bancaires
-      const EXCLUDE=['culture','ثقاف','maison','مدرسة','école','ecole','school','مستشفى','hôpital','hopital','جامع','mosqu','مسجد','كنيسة','church','حديقة','park','ملعب','stade','مقهى','café','cafe','restaurant','مطعم','فندق','hotel','نزل','صيدلية','pharreturn','محطة','station'];
-      if(EXCLUDE.some(k=>n.includes(k)))return false;
-      // Garder seulement si racine banque/poste présente
-      return ATM_KEYWORDS.some(k=>n.includes(k));
-    });
+    const seen=new Set();
+    items=items.filter(m=>{const k=m.lat.toFixed(4)+','+m.lon.toFixed(4);if(seen.has(k))return false;seen.add(k);return true;});
   }
   return items;
 }
