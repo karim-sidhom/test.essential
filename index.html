@@ -527,69 +527,49 @@ const SERVICE_NAMES={
   fuel:{ar:'تعبية الوقود',fr:'faire le plein',en:'fill up'},
 };
 
+// ══ Variables de contrôle ══
+let synth = window.speechSynthesis;
+
 // ── Avatar (cercle vidéo affiché pendant que l'app parle) ──
 function showAvatar(){
   const w=document.getElementById('avatar-wrap');
   if(!w)return;
+  w.style.display='block';
   w.classList.add('show');
   const v=document.getElementById('avatar-video');
-  if(v){try{v.currentTime=0;const p=v.play();if(p&&p.catch)p.catch(()=>{});}catch(_){}}
+  if(v){v.currentTime=0;v.play().catch(e=>console.error("Erreur vidéo:",e));}
 }
 function hideAvatar(){
   const w=document.getElementById('avatar-wrap');
   if(!w)return;
   w.classList.remove('show');
+  setTimeout(()=>{w.style.display='none';},400);
   const v=document.getElementById('avatar-video');
-  if(v){try{v.pause();}catch(_){}}
+  if(v){v.pause();}
 }
 
-// ── Lecture vocale robuste : charge les voix, survit à une voix manquante, évite le bug cancel/speak ──
+// ── Lecture vocale robuste ──
 function playSpeech(items,onDone){
-  const synth=window.speechSynthesis;
   if(!synth){if(onDone)onDone();return;}
-  function pickVoice(lang){
-    const vs=synth.getVoices()||[];
-    const base=(lang||'').slice(0,2).toLowerCase();
-    return vs.find(v=>v.lang&&v.lang.toLowerCase()===lang.toLowerCase())
-        || vs.find(v=>v.lang&&v.lang.toLowerCase().startsWith(base))
-        || null;
-  }
-  // Chrome arrête de parler après ~15s sur une longue phrase : on le relance régulièrement
   let keepAlive=setInterval(()=>{
-    try{ if(synth.speaking){ synth.pause(); synth.resume(); } }catch(_){}
-  },9000);
-  function stopKeepAlive(){ if(keepAlive){clearInterval(keepAlive);keepAlive=null;} }
+    if(synth.speaking){synth.pause();synth.resume();}
+  },10000);
   function run(){
     let i=0;
     (function next(){
-      if(i>=items.length){stopKeepAlive();if(onDone)onDone();return;}
+      if(i>=items.length){clearInterval(keepAlive);if(onDone)onDone();return;}
       const it=items[i++];
       const u=new SpeechSynthesisUtterance(it.text);
-      u.lang=it.lang;u.rate=it.rate||0.88;
-      const v=pickVoice(it.lang);if(v)u.voice=v;
-      let advanced=false;
-      const advance=()=>{if(advanced)return;advanced=true;clearTimeout(guard);next();};
-      // Filet de sécurité : ne se déclenche que si onend/onerror ne viennent jamais,
-      // et n'interrompt JAMAIS une phrase encore en cours de lecture.
-      const estMs=(it.text.length*120)/(u.rate||1)+8000;
-      let guard=setTimeout(function check(){
-        if(advanced)return;
-        if(synth.speaking||synth.pending){ guard=setTimeout(check,2000); return; } // parle encore → on attend
-        advance();
-      },estMs);
-      u.onend=advance;
-      u.onerror=advance;
-      try{synth.speak(u);}catch(_){advance();}
+      u.lang=it.lang;
+      u.rate=0.9;
+      const guard=setTimeout(()=>{synth.cancel();next();},15000);
+      u.onend=()=>{clearTimeout(guard);next();};
+      u.onerror=()=>{clearTimeout(guard);next();};
+      synth.speak(u);
     })();
   }
-  try{synth.cancel();}catch(_){}
-  if((synth.getVoices()||[]).length===0){
-    let started=false;const go=()=>{if(started)return;started=true;run();};
-    synth.onvoiceschanged=go;
-    setTimeout(go,400); // secours si l'événement ne se déclenche pas
-  }else{
-    setTimeout(run,90); // évite le bug cancel/speak de Chrome
-  }
+  synth.cancel();
+  run();
 }
 
 function speakResults(){
