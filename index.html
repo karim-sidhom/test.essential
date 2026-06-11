@@ -529,12 +529,18 @@ const SERVICE_NAMES={
 
 // ══ Variables de contrôle ══
 let synth = window.speechSynthesis;
+let _hideTimer = null;
 
 // ── Avatar (cercle vidéo affiché pendant que l'app parle) ──
 function showAvatar(){
   const w=document.getElementById('avatar-wrap');
   if(!w)return;
+  // Cancel any pending hide so it can't race and hide us again
+  if(_hideTimer){clearTimeout(_hideTimer);_hideTimer=null;}
   w.style.display='block';
+  // Force reflow so the CSS animation re-triggers if .show was already present
+  w.classList.remove('show');
+  void w.offsetWidth;
   w.classList.add('show');
   const v=document.getElementById('avatar-video');
   if(v){v.currentTime=0;v.play().catch(e=>console.error("Erreur vidéo:",e));}
@@ -543,7 +549,7 @@ function hideAvatar(){
   const w=document.getElementById('avatar-wrap');
   if(!w)return;
   w.classList.remove('show');
-  setTimeout(()=>{w.style.display='none';},400);
+  _hideTimer=setTimeout(()=>{w.style.display='none';_hideTimer=null;},400);
   const v=document.getElementById('avatar-video');
   if(v){v.pause();}
 }
@@ -552,24 +558,34 @@ function hideAvatar(){
 function playSpeech(items,onDone){
   if(!synth){if(onDone)onDone();return;}
   let keepAlive=setInterval(()=>{
-    if(synth.speaking){synth.pause();synth.resume();}
-  },10000);
+    try{if(synth.speaking){synth.pause();synth.resume();}}catch(_){}
+  },9000);
+  function stopKeepAlive(){if(keepAlive){clearInterval(keepAlive);keepAlive=null;}}
   function run(){
     let i=0;
     (function next(){
-      if(i>=items.length){clearInterval(keepAlive);if(onDone)onDone();return;}
+      if(i>=items.length){stopKeepAlive();if(onDone)onDone();return;}
       const it=items[i++];
       const u=new SpeechSynthesisUtterance(it.text);
       u.lang=it.lang;
-      u.rate=0.9;
-      const guard=setTimeout(()=>{synth.cancel();next();},15000);
-      u.onend=()=>{clearTimeout(guard);next();};
-      u.onerror=()=>{clearTimeout(guard);next();};
-      synth.speak(u);
+      u.rate=it.rate||0.9;
+      // Guard: advance if onend/onerror never fire
+      let advanced=false;
+      const advance=()=>{if(advanced)return;advanced=true;clearTimeout(guard);next();};
+      const estMs=(it.text.length*120)/(u.rate||1)+8000;
+      let guard=setTimeout(function check(){
+        if(advanced)return;
+        if(synth.speaking||synth.pending){guard=setTimeout(check,2000);return;}
+        advance();
+      },estMs);
+      u.onend=advance;
+      u.onerror=advance;
+      try{synth.speak(u);}catch(_){advance();}
     })();
   }
-  synth.cancel();
-  run();
+  try{synth.cancel();}catch(_){}
+  // Small delay avoids Chrome's cancel→speak silent-drop bug
+  setTimeout(run,90);
 }
 
 function speakResults(){
