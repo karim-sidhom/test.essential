@@ -10,69 +10,69 @@
 <style>
 :root {
   --deep:#0a0005;--dark:#150008;
-  --gold:#1a7a3a;--gold-bright:#2ecc71;--gold-shine:#4ddb8a;--gold-deep:#157a35;
-  --gold-glow:rgba(46,204,113,0.55);--gold-dim:rgba(46,204,113,0.12);
-  --text:#e8fff2;--text-dim:#7ecf99;
-  --card:rgba(20,0,8,0.92);--card-border:rgba(46,204,113,0.4);
+  --gold:#7a1a2e;--gold-bright:#cc2e5a;--gold-shine:#db4d72;--gold-deep:#7a1545;
+  --gold-glow:rgba(204,46,90,0.55);--gold-dim:rgba(204,46,90,0.12);
+  --text:#ffe8ef;--text-dim:#cf7e94;
+  --card:rgba(20,0,8,0.92);--card-border:rgba(204,46,90,0.4);
 }
 *,*::before,*::after{box-sizing:border-box;margin:0;padding:0}
 body{font-family:'Tajawal',sans-serif;background:var(--deep);color:var(--text);min-height:100vh;padding:0 0 40px;overflow-x:hidden;}
 
 .bg-overlay{position:fixed;inset:0;background:linear-gradient(180deg,rgba(10,0,5,0.92) 0%,rgba(30,0,12,0.7) 40%,rgba(10,0,5,0.95) 100%);z-index:0;}
 .gold-topline{position:fixed;top:0;left:0;right:0;height:4px;background:linear-gradient(90deg,transparent,var(--gold-deep),var(--gold-bright),var(--gold-shine),var(--gold-bright),var(--gold-deep),transparent);box-shadow:0 0 20px 6px var(--gold-glow);z-index:10;animation:shimmer 3s ease-in-out infinite;}
-@keyframes shimmer{0%,100%{box-shadow:0 0 20px 6px var(--gold-glow);}50%{box-shadow:0 0 40px 12px rgba(46,204,113,0.9);}}
+@keyframes shimmer{0%,100%{box-shadow:0 0 20px 6px var(--gold-glow);}50%{box-shadow:0 0 40px 12px rgba(204,46,90,0.9);}}
 
 .app{position:relative;z-index:2;max-width:500px;margin:0 auto;padding:0 16px;}
 
 /* ── HEADER ── */
 .header{text-align:center;padding:50px 0 20px;}
-.quran-banner{background:linear-gradient(135deg,rgba(20,0,8,0.97),rgba(50,0,20,0.94));border:1px solid rgba(46,204,113,0.35);border-radius:16px;padding:14px 18px;margin-bottom:20px;text-align:center;}
-.bismillah{font-family:'Amiri',serif;font-size:20px;color:var(--gold-shine);text-shadow:0 0 15px rgba(46,204,113,0.7);display:block;margin-bottom:6px;}
+.quran-banner{background:linear-gradient(135deg,rgba(20,0,8,0.97),rgba(50,0,20,0.94));border:1px solid rgba(204,46,90,0.35);border-radius:16px;padding:14px 18px;margin-bottom:20px;text-align:center;}
+.bismillah{font-family:'Amiri',serif;font-size:20px;color:var(--gold-shine);text-shadow:0 0 15px rgba(204,46,90,0.7);display:block;margin-bottom:6px;}
 .quran-verse{font-family:'Amiri',serif;font-size:15px;color:var(--gold-bright);line-height:2;}
 .quran-ref{font-size:10px;color:var(--text-dim);margin-top:4px;opacity:0.7;}
-.app-title{font-family:'Amiri',serif;font-size:40px;font-weight:700;background:linear-gradient(160deg,#0d4a20,var(--gold-bright),var(--gold-shine),#e0fff0,var(--gold-shine),var(--gold-bright),#0d4a20);-webkit-background-clip:text;-webkit-text-fill-color:transparent;background-clip:text;background-size:200% 200%;animation:gold-flow 4s ease-in-out infinite;letter-spacing:4px;}
+.app-title{font-family:'Amiri',serif;font-size:40px;font-weight:700;background:linear-gradient(160deg,#4a0d2a,var(--gold-bright),var(--gold-shine),#ffe0eb,var(--gold-shine),var(--gold-bright),#4a0d2a);-webkit-background-clip:text;-webkit-text-fill-color:transparent;background-clip:text;background-size:200% 200%;animation:gold-flow 4s ease-in-out infinite;letter-spacing:4px;}
 @keyframes gold-flow{0%,100%{background-position:0% 50%}50%{background-position:100% 50%}}
 .app-sub{font-size:11px;letter-spacing:3px;color:var(--text-dim);margin-top:4px;}
 
 /* ── GPS STATUS ── */
-.gps-bar{display:flex;align-items:center;gap:8px;background:rgba(0,0,0,0.4);border:1px solid rgba(46,204,113,0.18);border-radius:10px;padding:10px 14px;margin-bottom:20px;}
-.gps-dot{width:8px;height:8px;border-radius:50%;background:#27ae60;box-shadow:0 0 8px rgba(39,174,96,0.8);animation:blink 1.5s ease-in-out infinite;flex-shrink:0;}
-.gps-dot.red{background:#1a6fe0;box-shadow:0 0 8px rgba(26,111,224,0.8);}
+.gps-bar{display:flex;align-items:center;gap:8px;background:rgba(0,0,0,0.4);border:1px solid rgba(204,46,90,0.18);border-radius:10px;padding:10px 14px;margin-bottom:20px;}
+.gps-dot{width:8px;height:8px;border-radius:50%;background:#ae2760;box-shadow:0 0 8px rgba(39,174,96,0.8);animation:blink 1.5s ease-in-out infinite;flex-shrink:0;}
+.gps-dot.red{background:#cc2e5a;box-shadow:0 0 8px rgba(204,46,90,0.8);}
 @keyframes blink{0%,100%{opacity:1}50%{opacity:0.3}}
 .gps-txt{font-family:'DM Mono',monospace;font-size:11px;color:var(--gold-shine);flex:1;direction:ltr;}
 
 /* ── MANUAL INPUT ── */
 .manual-wrap{display:none;flex-direction:column;gap:8px;margin-bottom:16px;}
-.manual-input{padding:10px;background:rgba(255,255,255,0.04);border:1px solid rgba(46,204,113,0.18);color:white;border-radius:8px;font-family:'DM Mono';direction:ltr;text-align:center;font-size:13px;outline:none;width:100%;}
+.manual-input{padding:10px;background:rgba(255,255,255,0.04);border:1px solid rgba(204,46,90,0.18);color:white;border-radius:8px;font-family:'DM Mono';direction:ltr;text-align:center;font-size:13px;outline:none;width:100%;}
 .manual-btn{background:linear-gradient(90deg,var(--gold-deep),var(--gold-bright));color:#0a0005;border:none;padding:11px;border-radius:8px;font-weight:800;font-family:'Tajawal';cursor:pointer;font-size:14px;}
-.app-select{background:rgba(20,0,8,0.9);color:var(--gold-shine);border:1px solid rgba(46,204,113,0.28);padding:10px 14px;border-radius:10px;font-family:'Tajawal';font-size:14px;width:100%;outline:none;font-weight:700;margin-bottom:12px;}
+.app-select{background:rgba(20,0,8,0.9);color:var(--gold-shine);border:1px solid rgba(204,46,90,0.28);padding:10px 14px;border-radius:10px;font-family:'Tajawal';font-size:14px;width:100%;outline:none;font-weight:700;margin-bottom:12px;}
 
 /* ── 4 CARDS ── */
 .cards-grid{display:flex;flex-direction:column;gap:12px;margin-bottom:24px;}
 .service-card{background:var(--card);border:1.5px solid var(--card-border);border-radius:16px;overflow:hidden;transition:transform .2s;-webkit-tap-highlight-color:transparent;}
 .service-card:active{transform:scale(0.98);}
-.card-header{display:flex;align-items:center;justify-content:space-between;padding:16px 18px;cursor:pointer;background:linear-gradient(135deg,rgba(46,204,113,0.08),rgba(46,204,113,0.02));}
+.card-header{display:flex;align-items:center;justify-content:space-between;padding:16px 18px;cursor:pointer;background:linear-gradient(135deg,rgba(204,46,90,0.08),rgba(204,46,90,0.02));}
 .card-left{display:flex;align-items:center;gap:14px;}
-.card-icon{font-size:28px;filter:drop-shadow(0 0 6px rgba(46,204,113,0.5));}
+.card-icon{font-size:28px;filter:drop-shadow(0 0 6px rgba(204,46,90,0.5));}
 .card-info{}
 .card-title{font-family:'Amiri',serif;font-size:17px;font-weight:700;color:var(--gold-shine);}
-.card-nearest{font-size:11px;color:rgba(100,200,130,0.6);font-family:'DM Mono',monospace;margin-top:3px;direction:ltr;}
+.card-nearest{font-size:11px;color:rgba(200,100,130,0.6);font-family:'DM Mono',monospace;margin-top:3px;direction:ltr;}
 .card-actions{display:flex;align-items:center;gap:10px;}
-.card-open-btn{padding:8px 14px;border-radius:8px;font-size:12px;font-weight:700;background:rgba(46,204,113,0.12);border:1px solid rgba(46,204,113,0.4);color:var(--gold-bright);text-decoration:none;font-family:'Tajawal';cursor:pointer;white-space:nowrap;}
+.card-open-btn{padding:8px 14px;border-radius:8px;font-size:12px;font-weight:700;background:rgba(204,46,90,0.12);border:1px solid rgba(204,46,90,0.4);color:var(--gold-bright);text-decoration:none;font-family:'Tajawal';cursor:pointer;white-space:nowrap;}
 .card-arrow{color:var(--gold-bright);font-size:13px;transition:transform .25s;flex-shrink:0;}
 .card-arrow.open{transform:rotate(180deg);}
 
 /* Card body — list of results */
-.card-body{display:none;border-top:1px solid rgba(46,204,113,0.12);padding:8px 14px;}
+.card-body{display:none;border-top:1px solid rgba(204,46,90,0.12);padding:8px 14px;}
 .card-body.open{display:block;}
 .result-item{
-  background:linear-gradient(135deg,rgba(30,180,80,0.18),rgba(46,204,113,0.08),rgba(20,150,60,0.12));
+  background:linear-gradient(135deg,rgba(180,30,60,0.18),rgba(204,46,90,0.08),rgba(20,150,60,0.12));
   border:1.5px solid var(--gold-bright);
   border-radius:12px;
   padding:14px 16px;
   margin-bottom:10px;
   direction:rtl;
-  box-shadow:0 4px 15px rgba(0,0,0,0.5),0 0 12px rgba(46,204,113,0.15),inset 0 1px 0 rgba(46,204,113,0.25);
+  box-shadow:0 4px 15px rgba(0,0,0,0.5),0 0 12px rgba(204,46,90,0.15),inset 0 1px 0 rgba(204,46,90,0.25);
   transform:perspective(600px) translateZ(0);
   transition:transform .2s,box-shadow .2s;
   -webkit-tap-highlight-color:transparent;
@@ -80,28 +80,28 @@ body{font-family:'Tajawal',sans-serif;background:var(--deep);color:var(--text);m
 .result-item:last-child{margin-bottom:0;}
 .result-item:active{
   transform:perspective(600px) translateZ(8px) scale(1.02);
-  box-shadow:0 8px 25px rgba(0,0,0,0.6),0 0 24px rgba(46,204,113,0.35),inset 0 1px 0 rgba(46,204,113,0.4);
+  box-shadow:0 8px 25px rgba(0,0,0,0.6),0 0 24px rgba(204,46,90,0.35),inset 0 1px 0 rgba(204,46,90,0.4);
 }
 .result-top{display:flex;align-items:center;gap:10px;margin-bottom:10px;}
-.result-rank{width:28px;height:28px;border-radius:50%;background:linear-gradient(135deg,var(--gold-deep),var(--gold-bright));display:flex;align-items:center;justify-content:center;font-size:12px;font-weight:800;color:#0a0005;flex-shrink:0;font-family:'DM Mono',monospace;box-shadow:0 0 8px rgba(46,204,113,0.4);}
+.result-rank{width:28px;height:28px;border-radius:50%;background:linear-gradient(135deg,var(--gold-deep),var(--gold-bright));display:flex;align-items:center;justify-content:center;font-size:12px;font-weight:800;color:#0a0005;flex-shrink:0;font-family:'DM Mono',monospace;box-shadow:0 0 8px rgba(204,46,90,0.4);}
 .result-info{flex:1;}
-.result-name{font-size:20px;color:var(--gold-shine);font-weight:700;font-family:'Amiri',serif;line-height:1.4;text-shadow:0 0 8px rgba(46,204,113,0.3);}
-.result-dist{font-size:12px;color:rgba(100,200,130,0.8);font-family:'DM Mono',monospace;margin-top:3px;direction:ltr;}
+.result-name{font-size:20px;color:var(--gold-shine);font-weight:700;font-family:'Amiri',serif;line-height:1.4;text-shadow:0 0 8px rgba(204,46,90,0.3);}
+.result-dist{font-size:12px;color:rgba(200,100,130,0.8);font-family:'DM Mono',monospace;margin-top:3px;direction:ltr;}
 .result-btns{display:flex;gap:8px;}
-.result-btn-nav{flex:1;padding:9px;border-radius:9px;font-size:13px;font-weight:800;background:linear-gradient(135deg,rgba(46,204,113,0.22),rgba(46,204,113,0.08));border:1.5px solid var(--gold-bright);color:var(--gold-bright);text-decoration:none;font-family:'Tajawal',sans-serif;text-align:center;box-shadow:0 0 10px rgba(46,204,113,0.15);}
-.result-btn-map{flex:1;padding:9px;border-radius:9px;font-size:13px;font-weight:700;background:rgba(46,204,113,0.04);border:1px solid rgba(46,204,113,0.3);color:rgba(100,200,130,0.8);text-decoration:none;font-family:'Tajawal',sans-serif;text-align:center;}
-.no-results{text-align:center;padding:16px;font-size:13px;color:rgba(100,200,130,0.4);font-family:'Tajawal';}
+.result-btn-nav{flex:1;padding:9px;border-radius:9px;font-size:13px;font-weight:800;background:linear-gradient(135deg,rgba(204,46,90,0.22),rgba(204,46,90,0.08));border:1.5px solid var(--gold-bright);color:var(--gold-bright);text-decoration:none;font-family:'Tajawal',sans-serif;text-align:center;box-shadow:0 0 10px rgba(204,46,90,0.15);}
+.result-btn-map{flex:1;padding:9px;border-radius:9px;font-size:13px;font-weight:700;background:rgba(204,46,90,0.04);border:1px solid rgba(204,46,90,0.3);color:rgba(200,100,130,0.8);text-decoration:none;font-family:'Tajawal',sans-serif;text-align:center;}
+.no-results{text-align:center;padding:16px;font-size:13px;color:rgba(200,100,130,0.4);font-family:'Tajawal';}
 
 /* ── FOOTER ── */
 .footer{text-align:center;padding:16px 0;}
 .footer-arabic{font-family:'Amiri',serif;font-size:22px;color:var(--gold-bright);display:block;margin-bottom:4px;text-shadow:0 0 16px var(--gold-glow);}
-.footer-sub{font-size:9px;letter-spacing:3px;color:rgba(46,204,113,0.3);}
+.footer-sub{font-size:9px;letter-spacing:3px;color:rgba(204,46,90,0.3);}
 
 .toast-wrap{position:fixed;bottom:20px;left:50%;transform:translateX(-50%);z-index:999;}
 /* ── FESTIVE DAYS ── */
 .festive-banner{display:none;width:100%;border-radius:16px;padding:16px 18px;margin-bottom:16px;text-align:center;position:relative;overflow:hidden;animation:festive-glow 2s ease-in-out infinite;}
 .festive-banner.show{display:block;}
-@keyframes festive-glow{0%,100%{box-shadow:0 0 20px rgba(46,204,113,0.3);}50%{box-shadow:0 0 40px rgba(46,204,113,0.7);}}
+@keyframes festive-glow{0%,100%{box-shadow:0 0 20px rgba(204,46,90,0.3);}50%{box-shadow:0 0 40px rgba(204,46,90,0.7);}}
 .festive-emoji{font-size:36px;display:block;margin-bottom:6px;animation:bounce 1s ease-in-out infinite;}
 @keyframes bounce{0%,100%{transform:translateY(0)}50%{transform:translateY(-6px)}}
 .festive-title{font-family:'Amiri',serif;font-size:22px;font-weight:700;display:block;margin-bottom:4px;}
@@ -115,7 +115,7 @@ body{font-family:'Tajawal',sans-serif;background:var(--deep);color:var(--text);m
   position:fixed;bottom:80px;left:50%;transform:translateX(-50%);
   z-index:8000;width:180px;height:180px;border-radius:50%;
   overflow:hidden;border:3px solid var(--gold-bright);
-  box-shadow:0 0 30px rgba(46,204,113,0.5),0 0 60px rgba(46,204,113,0.2);
+  box-shadow:0 0 30px rgba(204,46,90,0.5),0 0 60px rgba(204,46,90,0.2);
   background:#000;
 }
 .avatar-wrap.show{display:block;animation:avatarIn .4s cubic-bezier(.16,1,.3,1);}
@@ -161,7 +161,7 @@ body{font-family:'Tajawal',sans-serif;background:var(--deep);color:var(--text);m
 
   <!-- HORAIRES DE PRIÈRE -->
   <div style="background:linear-gradient(160deg,rgba(15,0,6,0.98),rgba(30,0,12,0.96));border:1.5px solid var(--gold-bright);border-radius:16px;padding:12px;margin-bottom:20px;">
-    <div style="display:flex;align-items:center;justify-content:space-between;margin-bottom:10px;padding-bottom:8px;border-bottom:1px solid rgba(46,204,113,0.18);">
+    <div style="display:flex;align-items:center;justify-content:space-between;margin-bottom:10px;padding-bottom:8px;border-bottom:1px solid rgba(204,46,90,0.18);">
       <span style="font-family:'Amiri',serif;font-size:14px;color:var(--gold-shine);font-weight:700;">🕌 مواقيت الصلاة</span>
       <span style="font-size:10px;color:var(--text-dim);" id="hijri-date">—</span>
     </div>
@@ -171,12 +171,12 @@ body{font-family:'Tajawal',sans-serif;background:var(--deep);color:var(--text);m
   </div>
 
   <!-- ORATEUR ITINÉRAIRE INTELLIGENT -->
-  <button onclick="startItineraryListen()" id="itin-btn" style="width:100%;padding:14px;margin-bottom:10px;background:linear-gradient(135deg,rgba(46,204,113,0.12),rgba(46,204,113,0.04));border:2px solid rgba(46,204,113,0.4);color:var(--gold-bright);border-radius:50px;font-family:'Tajawal',sans-serif;font-size:15px;font-weight:800;cursor:pointer;box-shadow:0 0 16px rgba(46,204,113,0.1);letter-spacing:.5px;">
+  <button onclick="startItineraryListen()" id="itin-btn" style="width:100%;padding:14px;margin-bottom:10px;background:linear-gradient(135deg,rgba(204,46,90,0.12),rgba(204,46,90,0.04));border:2px solid rgba(204,46,90,0.4);color:var(--gold-bright);border-radius:50px;font-family:'Tajawal',sans-serif;font-size:15px;font-weight:800;cursor:pointer;box-shadow:0 0 16px rgba(204,46,90,0.1);letter-spacing:.5px;">
     🗺️ مساري — Mon Itinéraire — My Route
   </button>
 
   <!-- ORATEUR 3 LANGUES -->
-  <button onclick="speakResults()" style="width:100%;padding:14px;margin-bottom:16px;background:linear-gradient(135deg,rgba(46,204,113,0.18),rgba(46,204,113,0.05));border:2px solid rgba(46,204,113,0.55);color:var(--gold-bright);border-radius:50px;font-family:'Tajawal',sans-serif;font-size:15px;font-weight:800;cursor:pointer;box-shadow:0 0 20px rgba(46,204,113,0.15);letter-spacing:.5px;">
+  <button onclick="speakResults()" style="width:100%;padding:14px;margin-bottom:16px;background:linear-gradient(135deg,rgba(204,46,90,0.18),rgba(204,46,90,0.05));border:2px solid rgba(204,46,90,0.55);color:var(--gold-bright);border-radius:50px;font-family:'Tajawal',sans-serif;font-size:15px;font-weight:800;cursor:pointer;box-shadow:0 0 20px rgba(204,46,90,0.15);letter-spacing:.5px;">
     🔊 سماع النتائج — Écouter — Listen
   </button>
 
@@ -280,7 +280,7 @@ function haversineKm(a,b,c,e){const R=6371,dL=d2r(c-a),dO=d2r(e-b),x=Math.sin(dL
 function fmtDist(d){return d<1?(d*1000).toFixed(0)+' م':d.toFixed(2)+' كم';}
 
 function showNotif(msg){
-  Toastify({text:msg,duration:3000,gravity:'bottom',position:'center',style:{background:'rgba(20,0,8,0.95)',color:'#2ecc71',border:'1px solid rgba(46,204,113,0.4)',borderRadius:'50px',fontFamily:"'Tajawal',sans-serif",fontSize:'13px',fontWeight:'700',padding:'10px 20px'}}).showToast();
+  Toastify({text:msg,duration:3000,gravity:'bottom',position:'center',style:{background:'rgba(20,0,8,0.95)',color:'#cc2e5a',border:'1px solid rgba(204,46,90,0.4)',borderRadius:'50px',fontFamily:"'Tajawal',sans-serif",fontSize:'13px',fontWeight:'700',padding:'10px 20px'}}).showToast();
 }
 
 function isGoodGps(p){
@@ -498,11 +498,11 @@ function renderPrayer(){
   strip.innerHTML=PRAYER_KEYS.map((p,i)=>{
     const t=(prayerData.timings[p.key]||'--:--').substring(0,5);
     const isA=i===aIdx,isN=i===nIdx&&aIdx!==-1;
-    return`<div style="display:flex;flex-direction:column;align-items:center;gap:2px;background:${isA?'linear-gradient(160deg,#4ddb8a,#fff5a0,#4ddb8a)':isN?'linear-gradient(160deg,#157a35,#e8a800,#157a35)':'linear-gradient(160deg,#1a7a3a,#2ecc71,#1a7a3a)'};border:1.5px solid var(--gold-shine);border-radius:8px;padding:5px 2px;">
+    return`<div style="display:flex;flex-direction:column;align-items:center;gap:2px;background:${isA?'linear-gradient(160deg,#db4d72,#fff5a0,#db4d72)':isN?'linear-gradient(160deg,#7a1545,#e8a800,#7a1545)':'linear-gradient(160deg,#7a1a2e,#cc2e5a,#7a1a2e)'};border:1.5px solid var(--gold-shine);border-radius:8px;padding:5px 2px;">
       <span style="font-size:12px;">${p.icon}</span>
       <span style="font-family:'Amiri',serif;font-size:11px;font-weight:700;color:#0a0005;">${p.ar}</span>
       <span style="font-family:'DM Mono',monospace;font-size:10px;font-weight:700;color:#0a0005;direction:ltr;">${t}</span>
-      ${isN?'<span style="font-size:7px;color:#2ecc71;background:#0a0005;border-radius:3px;padding:1px 3px;">التالي</span>':''}
+      ${isN?'<span style="font-size:7px;color:#cc2e5a;background:#0a0005;border-radius:3px;padding:1px 3px;">التالي</span>':''}
     </div>`;
   }).join('');
   try{
@@ -655,8 +655,8 @@ function toggleLite(){
 
   if(liteMode){
     liteBtn.textContent='✦ Vue complète';
-    liteBtn.style.background='linear-gradient(135deg,rgba(46,204,113,0.18),rgba(46,204,113,0.05))';
-    liteBtn.style.borderColor='rgba(46,204,113,0.55)';
+    liteBtn.style.background='linear-gradient(135deg,rgba(204,46,90,0.18),rgba(204,46,90,0.05))';
+    liteBtn.style.borderColor='rgba(204,46,90,0.55)';
     liteBtn.style.color='var(--gold-bright)';
     cardsGrid.style.display='none';
     if(speakerBtn)speakerBtn.style.display='none';
@@ -665,8 +665,8 @@ function toggleLite(){
   } else {
     liteBtn.textContent='⚡ Lite Edition';
     liteBtn.style.background='transparent';
-    liteBtn.style.borderColor='rgba(46,204,113,0.3)';
-    liteBtn.style.color='rgba(100,200,130,0.7)';
+    liteBtn.style.borderColor='rgba(204,46,90,0.3)';
+    liteBtn.style.color='rgba(200,100,130,0.7)';
     cardsGrid.style.display='flex';
     if(speakerBtn)speakerBtn.style.display='block';
     liteView.style.display='none';
@@ -682,19 +682,19 @@ function renderLiteView(){
   liteView.innerHTML=['mosque','pharmacy','atm','fuel'].map(type=>{
     const items=SERVICE_DATA[type]||[];
     const n=items[0];
-    if(!n)return`<div style="background:var(--card);border:1.5px solid rgba(46,204,113,0.2);border-radius:14px;padding:16px;display:flex;align-items:center;gap:14px;opacity:.4;"><span style="font-size:26px">${ICONS[type]}</span><span style="font-family:'Amiri',serif;font-size:16px;color:var(--text-dim);">لا توجد نتائج</span></div>`;
-    return`<div style="background:linear-gradient(135deg,rgba(30,180,80,0.15),rgba(46,204,113,0.06));border:1.5px solid var(--gold-bright);border-radius:14px;padding:16px;box-shadow:0 4px 15px rgba(0,0,0,0.5),0 0 12px rgba(46,204,113,0.12);">
+    if(!n)return`<div style="background:var(--card);border:1.5px solid rgba(204,46,90,0.2);border-radius:14px;padding:16px;display:flex;align-items:center;gap:14px;opacity:.4;"><span style="font-size:26px">${ICONS[type]}</span><span style="font-family:'Amiri',serif;font-size:16px;color:var(--text-dim);">لا توجد نتائج</span></div>`;
+    return`<div style="background:linear-gradient(135deg,rgba(180,30,60,0.15),rgba(204,46,90,0.06));border:1.5px solid var(--gold-bright);border-radius:14px;padding:16px;box-shadow:0 4px 15px rgba(0,0,0,0.5),0 0 12px rgba(204,46,90,0.12);">
       <div style="display:flex;align-items:center;gap:12px;margin-bottom:10px;">
         <span style="font-size:26px;">${ICONS[type]}</span>
         <div style="flex:1;">
           <div style="font-size:11px;color:var(--text-dim);font-family:'DM Mono',monospace;letter-spacing:1px;">${TITLES[type]}</div>
-          <div style="font-family:'Amiri',serif;font-size:20px;font-weight:700;color:var(--gold-shine);text-shadow:0 0 8px rgba(46,204,113,0.3);">${n.name}</div>
-          <div style="font-size:12px;color:rgba(100,200,130,0.7);font-family:'DM Mono',monospace;">📍 ${fmtDist(n.dist)}</div>
+          <div style="font-family:'Amiri',serif;font-size:20px;font-weight:700;color:var(--gold-shine);text-shadow:0 0 8px rgba(204,46,90,0.3);">${n.name}</div>
+          <div style="font-size:12px;color:rgba(200,100,130,0.7);font-family:'DM Mono',monospace;">📍 ${fmtDist(n.dist)}</div>
         </div>
       </div>
       <div style="display:flex;gap:8px;">
-        <a href="https://www.google.com/maps/dir/?api=1&destination=${n.lat},${n.lon}" target="_blank" style="flex:1;padding:9px;border-radius:9px;font-size:13px;font-weight:800;background:linear-gradient(135deg,rgba(46,204,113,0.22),rgba(46,204,113,0.08));border:1.5px solid var(--gold-bright);color:var(--gold-bright);text-decoration:none;font-family:'Tajawal',sans-serif;text-align:center;">🧭 توجيه</a>
-        <a href="${APPS[type]}" target="_blank" style="flex:1;padding:9px;border-radius:9px;font-size:13px;font-weight:700;background:rgba(46,204,113,0.04);border:1px solid rgba(46,204,113,0.3);color:rgba(100,200,130,0.8);text-decoration:none;font-family:'Tajawal',sans-serif;text-align:center;">📱 App</a>
+        <a href="https://www.google.com/maps/dir/?api=1&destination=${n.lat},${n.lon}" target="_blank" style="flex:1;padding:9px;border-radius:9px;font-size:13px;font-weight:800;background:linear-gradient(135deg,rgba(204,46,90,0.22),rgba(204,46,90,0.08));border:1.5px solid var(--gold-bright);color:var(--gold-bright);text-decoration:none;font-family:'Tajawal',sans-serif;text-align:center;">🧭 توجيه</a>
+        <a href="${APPS[type]}" target="_blank" style="flex:1;padding:9px;border-radius:9px;font-size:13px;font-weight:700;background:rgba(204,46,90,0.04);border:1px solid rgba(204,46,90,0.3);color:rgba(200,100,130,0.8);text-decoration:none;font-family:'Tajawal',sans-serif;text-align:center;">📱 App</a>
       </div>
     </div>`;
   }).join('');
@@ -729,7 +729,7 @@ function startItineraryListen(){
   const btn=document.getElementById('itin-btn');
   btn.textContent='🎙️ أنا أسمعك...';
   btn.style.borderColor='var(--gold-bright)';
-  btn.style.background='linear-gradient(135deg,rgba(46,204,113,0.2),rgba(46,204,113,0.05))';
+  btn.style.background='linear-gradient(135deg,rgba(204,46,90,0.2),rgba(204,46,90,0.05))';
   itinListening=true;
 
   itinRecognition=new SR();
@@ -790,7 +790,7 @@ function stopItineraryListen(){
   itinListening=false;
   if(itinRecognition){try{itinRecognition.abort();}catch(e){}}
   const btn=document.getElementById('itin-btn');
-  if(btn){btn.textContent='🗺️ مساري — Mon Itinéraire — My Route';btn.style.borderColor='rgba(46,204,113,0.4)';btn.style.background='linear-gradient(135deg,rgba(46,204,113,0.12),rgba(46,204,113,0.04))';}
+  if(btn){btn.textContent='🗺️ مساري — Mon Itinéraire — My Route';btn.style.borderColor='rgba(204,46,90,0.4)';btn.style.background='linear-gradient(135deg,rgba(204,46,90,0.12),rgba(204,46,90,0.04))';}
 }
 
 function processItineraryVoice(text){
@@ -857,15 +857,15 @@ const FIXED_DAYS=[
   [12,14,'🎂','عيد ميلاد سعيد يا لورد!','Joyeux Anniversaire LORD!','linear-gradient(135deg,rgba(255,100,150,0.25),rgba(255,50,100,0.1))'],
   // Tunisia
   [3,20,'🇹🇳','عيد الاستقلال التونسي','Fête de l\'Indépendance — Tunisie','linear-gradient(135deg,rgba(220,0,0,0.2),rgba(255,255,255,0.05))'],
-  [4,9,'🕊️','يوم الشهداء — تونس','Jour des Martyrs — Tunisie','linear-gradient(135deg,rgba(200,134,10,0.2),rgba(46,204,113,0.08))'],
+  [4,9,'🕊️','يوم الشهداء — تونس','Jour des Martyrs — Tunisie','linear-gradient(135deg,rgba(200,134,10,0.2),rgba(204,46,90,0.08))'],
   [5,1,'👷','عيد الشغل','Fête du Travail','linear-gradient(135deg,rgba(255,50,50,0.2),rgba(255,100,0,0.08))'],
-  [7,25,'🇹🇳','عيد الجمهورية التونسية','Fête de la République — Tunisie','linear-gradient(135deg,rgba(220,0,0,0.2),rgba(46,204,113,0.08))'],
+  [7,25,'🇹🇳','عيد الجمهورية التونسية','Fête de la République — Tunisie','linear-gradient(135deg,rgba(220,0,0,0.2),rgba(204,46,90,0.08))'],
   [8,13,'👩','يوم المرأة التونسية','Fête de la Femme — Tunisie','linear-gradient(135deg,rgba(200,0,200,0.2),rgba(255,100,200,0.08))'],
-  [10,15,'🇹🇳','عيد الجلاء','Fête de l\'Évacuation — Tunisie','linear-gradient(135deg,rgba(220,0,0,0.2),rgba(46,204,113,0.08))'],
-  [11,7,'🇹🇳','الذكرى الوطنية','Fête Nationale — Tunisie','linear-gradient(135deg,rgba(220,0,0,0.2),rgba(46,204,113,0.08))'],
+  [10,15,'🇹🇳','عيد الجلاء','Fête de l\'Évacuation — Tunisie','linear-gradient(135deg,rgba(220,0,0,0.2),rgba(204,46,90,0.08))'],
+  [11,7,'🇹🇳','الذكرى الوطنية','Fête Nationale — Tunisie','linear-gradient(135deg,rgba(220,0,0,0.2),rgba(204,46,90,0.08))'],
   // World
-  [1,1,'🎆','رأس السنة الميلادية','Nouvel An','linear-gradient(135deg,rgba(100,100,255,0.2),rgba(46,204,113,0.1))'],
-  [12,31,'🎇','ليلة رأس السنة','Réveillon du Nouvel An','linear-gradient(135deg,rgba(100,100,255,0.2),rgba(46,204,113,0.1))'],
+  [1,1,'🎆','رأس السنة الميلادية','Nouvel An','linear-gradient(135deg,rgba(100,100,255,0.2),rgba(204,46,90,0.1))'],
+  [12,31,'🎇','ليلة رأس السنة','Réveillon du Nouvel An','linear-gradient(135deg,rgba(100,100,255,0.2),rgba(204,46,90,0.1))'],
   [12,25,'🎄','عيد الميلاد المجيد','Joyeux Noël','linear-gradient(135deg,rgba(0,150,0,0.2),rgba(255,0,0,0.1))'],
   [2,14,'💝','عيد الحب','Saint-Valentin','linear-gradient(135deg,rgba(255,50,100,0.2),rgba(255,150,150,0.1))'],
 ];
@@ -873,23 +873,23 @@ const FIXED_DAYS=[
 // Islamic dates 2025-2027 (approximate)
 const ISLAMIC_DAYS=[
   // Eid al-Fitr (Petit Aïd)
-  {y:2025,m:3,d:30,emoji:'🌙',ar:'عيد الفطر المبارك',fr:'Aïd el-Fitr Moubarak',color:'linear-gradient(135deg,rgba(0,150,100,0.25),rgba(46,204,113,0.1))'},
-  {y:2026,m:3,d:20,emoji:'🌙',ar:'عيد الفطر المبارك',fr:'Aïd el-Fitr Moubarak',color:'linear-gradient(135deg,rgba(0,150,100,0.25),rgba(46,204,113,0.1))'},
-  {y:2027,m:3,d:9,emoji:'🌙',ar:'عيد الفطر المبارك',fr:'Aïd el-Fitr Moubarak',color:'linear-gradient(135deg,rgba(0,150,100,0.25),rgba(46,204,113,0.1))'},
+  {y:2025,m:3,d:30,emoji:'🌙',ar:'عيد الفطر المبارك',fr:'Aïd el-Fitr Moubarak',color:'linear-gradient(135deg,rgba(150,0,50,0.25),rgba(204,46,90,0.1))'},
+  {y:2026,m:3,d:20,emoji:'🌙',ar:'عيد الفطر المبارك',fr:'Aïd el-Fitr Moubarak',color:'linear-gradient(135deg,rgba(150,0,50,0.25),rgba(204,46,90,0.1))'},
+  {y:2027,m:3,d:9,emoji:'🌙',ar:'عيد الفطر المبارك',fr:'Aïd el-Fitr Moubarak',color:'linear-gradient(135deg,rgba(150,0,50,0.25),rgba(204,46,90,0.1))'},
   // Eid al-Adha (Grand Aïd)
-  {y:2025,m:6,d:6,emoji:'🐑',ar:'عيد الأضحى المبارك',fr:'Aïd el-Adha Moubarak',color:'linear-gradient(135deg,rgba(0,100,200,0.25),rgba(46,204,113,0.1))'},
-  {y:2026,m:5,d:27,emoji:'🐑',ar:'عيد الأضحى المبارك',fr:'Aïd el-Adha Moubarak',color:'linear-gradient(135deg,rgba(0,100,200,0.25),rgba(46,204,113,0.1))'},
-  {y:2027,m:5,d:16,emoji:'🐑',ar:'عيد الأضحى المبارك',fr:'Aïd el-Adha Moubarak',color:'linear-gradient(135deg,rgba(0,100,200,0.25),rgba(46,204,113,0.1))'},
+  {y:2025,m:6,d:6,emoji:'🐑',ar:'عيد الأضحى المبارك',fr:'Aïd el-Adha Moubarak',color:'linear-gradient(135deg,rgba(0,100,200,0.25),rgba(204,46,90,0.1))'},
+  {y:2026,m:5,d:27,emoji:'🐑',ar:'عيد الأضحى المبارك',fr:'Aïd el-Adha Moubarak',color:'linear-gradient(135deg,rgba(0,100,200,0.25),rgba(204,46,90,0.1))'},
+  {y:2027,m:5,d:16,emoji:'🐑',ar:'عيد الأضحى المبارك',fr:'Aïd el-Adha Moubarak',color:'linear-gradient(135deg,rgba(0,100,200,0.25),rgba(204,46,90,0.1))'},
   // Mawlid
-  {y:2025,m:9,d:4,emoji:'💚',ar:'المولد النبوي الشريف',fr:'Mawlid an-Nabawi',color:'linear-gradient(135deg,rgba(0,150,0,0.25),rgba(46,204,113,0.1))'},
-  {y:2026,m:8,d:25,emoji:'💚',ar:'المولد النبوي الشريف',fr:'Mawlid an-Nabawi',color:'linear-gradient(135deg,rgba(0,150,0,0.25),rgba(46,204,113,0.1))'},
+  {y:2025,m:9,d:4,emoji:'💚',ar:'المولد النبوي الشريف',fr:'Mawlid an-Nabawi',color:'linear-gradient(135deg,rgba(0,150,0,0.25),rgba(204,46,90,0.1))'},
+  {y:2026,m:8,d:25,emoji:'💚',ar:'المولد النبوي الشريف',fr:'Mawlid an-Nabawi',color:'linear-gradient(135deg,rgba(0,150,0,0.25),rgba(204,46,90,0.1))'},
   // Ramadan start
-  {y:2025,m:3,d:1,emoji:'🌙',ar:'رمضان كريم','fr':'Ramadan Moubarak',color:'linear-gradient(135deg,rgba(0,100,150,0.25),rgba(46,204,113,0.1))'},
-  {y:2026,m:2,d:18,emoji:'🌙',ar:'رمضان كريم',fr:'Ramadan Moubarak',color:'linear-gradient(135deg,rgba(0,100,150,0.25),rgba(46,204,113,0.1))'},
+  {y:2025,m:3,d:1,emoji:'🌙',ar:'رمضان كريم','fr':'Ramadan Moubarak',color:'linear-gradient(135deg,rgba(0,100,150,0.25),rgba(204,46,90,0.1))'},
+  {y:2026,m:2,d:18,emoji:'🌙',ar:'رمضان كريم',fr:'Ramadan Moubarak',color:'linear-gradient(135deg,rgba(0,100,150,0.25),rgba(204,46,90,0.1))'},
 ];
 
 function spawnConfetti(color1,color2){
-  const colors=[color1||'#2ecc71',color2||'#ff6b6b','#6bffb8','#6bb8ff','#ff6bff','#4ddb8a'];
+  const colors=[color1||'#cc2e5a',color2||'#ff6b6b','#6bffb8','#6bb8ff','#ff6bff','#db4d72'];
   for(let i=0;i<40;i++){
     const el=document.createElement('div');
     el.className='confetti-piece';
@@ -933,7 +933,7 @@ function showFestiveBanner(emoji,ar,fr,color){
   const subEl=document.getElementById('festive-sub');
   if(!banner)return;
   banner.style.background=color;
-  banner.style.border='1.5px solid rgba(46,204,113,0.5)';
+  banner.style.border='1.5px solid rgba(204,46,90,0.5)';
   emojiEl.textContent=emoji;
   titleEl.textContent=ar;
   titleEl.style.color='var(--gold-shine)';
