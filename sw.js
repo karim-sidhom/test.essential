@@ -1,135 +1,151 @@
+// Service Worker for LORD SYSTEM PWA
 const CACHE_NAME = 'lord-system-v1';
-const urlsToCache = [
-  './',
-  './lord-system-pwa.html',
-  './manifest.json',
-  'https://fonts.googleapis.com/css2?family=Amiri:ital,wght@0,400;0,700;1,400&family=Tajawal:wght@300;400;500;700;800&family=DM+Mono:wght@400;500&display=swap'
+const STATIC_ASSETS = [
+  '/',
+  '/index.html',
+  '/manifest.json',
+  '/offline.html'
 ];
 
-// Install Event - Cache resources
+// Installation
 self.addEventListener('install', (event) => {
+  console.log('Service Worker installing...');
   event.waitUntil(
-    caches.open(CACHE_NAME)
-      .then((cache) => {
-        console.log('✅ Cache opened');
-        return cache.addAll(urlsToCache).catch(err => {
-          console.warn('⚠️ Some resources failed to cache:', err);
-        });
-      })
-      .then(() => self.skipWaiting())
+    caches.open(CACHE_NAME).then((cache) => {
+      console.log('Caching static assets');
+      return cache.addAll(STATIC_ASSETS).catch(() => {
+        console.log('Some assets could not be cached');
+      });
+    })
   );
+  self.skipWaiting();
 });
 
-// Activate Event - Clean old caches
+// Activation
 self.addEventListener('activate', (event) => {
+  console.log('Service Worker activating...');
   event.waitUntil(
     caches.keys().then((cacheNames) => {
       return Promise.all(
-        cacheNames.map((cacheName) => {
-          if (cacheName !== CACHE_NAME) {
-            console.log('🗑️ Deleting old cache:', cacheName);
+        cacheNames
+          .filter((cacheName) => cacheName !== CACHE_NAME)
+          .map((cacheName) => {
+            console.log('Deleting old cache:', cacheName);
             return caches.delete(cacheName);
-          }
-        })
+          })
       );
-    }).then(() => self.clients.claim())
+    })
   );
+  self.clients.claim();
 });
 
-// Fetch Event - Serve from cache, fallback to network
+// Fetch - Network First, fallback to Cache
 self.addEventListener('fetch', (event) => {
-  // Skip non-GET requests
-  if (event.request.method !== 'GET') {
+  const { request } = event;
+  const url = new URL(request.url);
+
+  // Don't cache non-GET requests
+  if (request.method !== 'GET') {
     return;
   }
 
-  event.respondWith(
-    caches.match(event.request)
-      .then((response) => {
-        // Return cached response if available
-        if (response) {
-          // Update cache in background
-          if (!event.request.url.includes('googleapis')) {
-            fetch(event.request)
-              .then((freshResponse) => {
-                caches.open(CACHE_NAME).then((cache) => {
-                  cache.put(event.request, freshResponse);
-                });
-              })
-              .catch(() => {});
+  // For APIs and external resources, use network-first strategy
+  if (url.origin !== self.location.origin || url.pathname.includes('api')) {
+    event.respondWith(
+      fetch(request)
+        .then((response) => {
+          if (!response || response.status !== 200) {
+            throw new Error('Network response was not ok');
           }
-          return response;
-        }
-
-        // Fetch from network if not cached
-        return fetch(event.request)
-          .then((response) => {
-            // Don't cache if not a successful response
-            if (!response || response.status !== 200 || response.type === 'error') {
-              return response;
-            }
-
-            // Clone the response
-            const responseToCache = response.clone();
-
-            // Cache the response
-            caches.open(CACHE_NAME)
-              .then((cache) => {
-                cache.put(event.request, responseToCache);
-              });
-
-            return response;
-          })
-          .catch(() => {
-            // Offline fallback
-            return new Response(
-              '<!DOCTYPE html><html><head><meta charset="utf-8"><title>Offline</title></head><body style="background:#0a0500;color:#fff;text-align:center;padding:50px;font-family:sans-serif"><h1>📡 No Connection</h1><p>vous êtes hors ligne - تم قطع الاتصال</p></body></html>',
-              { headers: { 'Content-Type': 'text/html; charset=utf-8' } }
-            );
+          // Clone the response
+          const responseClone = response.clone();
+          caches.open(CACHE_NAME).then((cache) => {
+            cache.put(request, responseClone);
           });
-      })
+          return response;
+        })
+        .catch(() => {
+          return caches.match(request).then((response) => {
+            return response || createOfflineResponse();
+          });
+        })
+    );
+    return;
+  }
+
+  // For HTML documents
+  if (request.mode === 'navigate') {
+    event.respondWith(
+      fetch(request)
+        .then((response) => {
+          if (!response || response.status !== 200) {
+            throw new Error('Network response was not ok');
+          }
+          const responseClone = response.clone();
+          caches.open(CACHE_NAME).then((cache) => {
+            cache.put(request, responseClone);
+          });
+          return response;
+        })
+        .catch(() => {
+          return caches.match(request).then((response) => {
+            return response || caches.match('/offline.html');
+          });
+        })
+    );
+    return;
+  }
+
+  // For CSS, JS, images - cache first strategy
+  event.respondWith(
+    caches.match(request).then((response) => {
+      if (response) {
+        return response;
+      }
+
+      return fetch(request)
+        .then((response) => {
+          if (!response || response.status !== 200) {
+            return response;
+          }
+
+          const responseClone = response.clone();
+          caches.open(CACHE_NAME).then((cache) => {
+            cache.put(request, responseClone);
+          });
+
+          return response;
+        })
+        .catch(() => {
+          return new Response('Resource not available offline', {
+            status: 503,
+            statusText: 'Service Unavailable',
+            headers: new Headers({
+              'Content-Type': 'text/plain'
+            })
+          });
+        });
+    })
   );
 });
 
-// Background Sync (for future feature)
-self.addEventListener('sync', (event) => {
-  if (event.tag === 'sync-locations') {
-    event.waitUntil(
-      fetch('/api/sync-locations')
-        .then(() => {
-          console.log('✅ Locations synced');
-        })
-        .catch(() => {
-          console.log('⚠️ Sync failed, will retry');
-        })
-    );
-  }
-});
-
-// Periodic Background Sync (optional)
-self.addEventListener('periodicsync', (event) => {
-  if (event.tag === 'update-prayer-times') {
-    event.waitUntil(
-      fetch('/api/prayer-times')
-        .then(() => {
-          console.log('✅ Prayer times updated');
-          // Show notification
-          self.registration.showNotification('أوقات الصلاة', {
-            body: 'تم تحديث مواقيت الصلاة',
-            badge: 'data:image/svg+xml,<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 48 48"><text x="24" y="36" font-size="40" text-anchor="middle">🕌</text></svg>',
-            icon: 'data:image/svg+xml,<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 192 192"><rect fill="%230a0500" width="192" height="192"/><text x="96" y="140" font-size="120" text-anchor="middle" fill="%23e87722">🕌</text></svg>'
-          });
-        })
-        .catch(() => {
-          console.log('⚠️ Prayer times update failed');
-        })
-    );
-  }
-});
-
-// Message Handler
+// Handle messages from clients
 self.addEventListener('message', (event) => {
   if (event.data && event.data.type === 'SKIP_WAITING') {
     self.skipWaiting();
   }
 });
+
+// Helper function for offline response
+function createOfflineResponse() {
+  return new Response(
+    '<html><body style="background:#0a0500;color:#f5a623;font-family:Tajawal,sans-serif;display:flex;align-items:center;justify-content:center;min-height:100vh;margin:0;"><div style="text-align:center;"><h1>عذراً</h1><p>لا توجد اتصال بالإنترنت</p><p style="font-size:12px;opacity:0.7;">بعض المحتوى متاح بدون إنترنت</p></div></body></html>',
+    {
+      status: 503,
+      statusText: 'Service Unavailable',
+      headers: new Headers({
+        'Content-Type': 'text/html; charset=utf-8'
+      })
+    }
+  );
+}
