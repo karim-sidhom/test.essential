@@ -259,6 +259,120 @@ body{font-family:'Tajawal',sans-serif;background:var(--deep);color:var(--text);m
       <div class="card-body" id="body-fuel"></div>
     </div>
 
+    <!-- 🐾 VÉTÉRINAIRE -->
+    <div class="service-card">
+      <div class="card-header" onclick="toggleCard('vet')">
+        <div class="card-left">
+          <span class="card-icon">🐾</span>
+          <div class="card-info">
+            <div class="card-title">الطبيب البيطري الأقرب</div>
+            <div class="card-nearest" id="nearest-vet">جارٍ البحث...</div>
+          </div>
+        </div>
+        <div class="card-actions">
+          <a href="https://albaytari.kieda.online" target="_blank" class="card-open-btn" onclick="event.stopPropagation()">🐾 البيطري</a>
+          <a id="maps-vet" href="#" target="_blank" class="card-open-btn" onclick="event.stopPropagation()" style="display:none;">🗺️</a>
+          <span class="card-arrow" id="arrow-vet">▼</span>
+        </div>
+      </div>
+      <div class="card-body" id="body-vet"></div>
+    </div>
+
+    <!-- 🦷 DENTISTE -->
+    <div class="service-card">
+      <div class="card-header" onclick="toggleCard('dentist')">
+        <div class="card-left">
+          <span class="card-icon">🦷</span>
+          <div class="card-info">
+            <div class="card-title">طبيب الأسنان الأقرب</div>
+            <div class="card-nearest" id="nearest-dentist">جارٍ البحث...</div>
+          </div>
+        </div>
+        <div class="card-actions">
+          <a href="https://dentiste.kieda.online" target="_blank" class="card-open-btn" onclick="event.stopPropagation()">🦷 طبيبي</a>
+          <a id="maps-dentist" href="#" target="_blank" class="card-open-btn" onclick="event.stopPropagation()" style="display:none;">🗺️</a>
+          <span class="card-arrow" id="arrow-dentist">▼</span>
+        </div>
+      </div>
+      <div class="card-body" id="body-dentist"></div>
+    </div>
+
+    <!-- 💳 MASRIFI -->
+    <div class="service-card">
+      <div class="card-header" onclick="toggleCard('bank')">
+        <div class="card-left">
+          <span class="card-icon">💳</span>
+          <div class="card-info">
+            <div class="card-title">البنك الأقرب</div>
+            <div class="card-nearest" id="nearest-bank">جارٍ البحث...</div>
+          </div>
+        </div>
+        <div class="card-actions">
+          <a href="https://masrifi.kieda.online" target="_blank" class="card-open-btn" onclick="event.stopPropagation()">💳 مصرفي</a>
+          <a id="maps-bank" href="#" target="_blank" class="card-open-btn" onclick="event.stopPropagation()" style="display:none;">🗺️</a>
+          <span class="card-arrow" id="arrow-bank">▼</span>
+        </div>
+      </div>
+      <div class="card-body" id="body-bank"></div>
+    </div>
+
+    <!-- 👁️ OPTICIEN -->
+    <div class="service-card">
+      <div class="card-header" onclick="toggleCard('optician')">
+        <div class="card-left">
+          <span class="card-icon">👁️</span>
+          <div class="card-info">
+            <div class="card-title">الخدمات البصرية الأقرب</div>
+            <div class="card-nearest" id="nearest-optician">جارٍ البحث...</div>
+          </div>
+        </div>
+        <div class="card-actions">
+          <a href="https://nadharatioptic.kieda.online" target="_blank" class="card-open-btn" onclick="event.stopPropagation()">👁️ نظاراتي</a>
+          <a id="maps-optician" href="#" target="_blank" class="card-open-btn" onclick="event.stopPropagation()" style="display:none;">🗺️</a>
+          <span class="card-arrow" id="arrow-optician">▼</span>
+        </div>
+      </div>
+      <div class="card-body" id="body-optician"></div>
+    </div>
+
+    <!-- 🏥 MÉDECIN GÉNÉRALISTE -->
+    <div class="service-card">
+      <div class="card-header" onclick="toggleCard('doctor')">
+        <div class="card-left">
+          <span class="card-icon">🏥</span>
+          <div class="card-info">
+            <div class="card-title">الطبيب العام الأقرب</div>
+            <div class="card-nearest" id="nearest-doctor">جارٍ البحث...</div>
+          </div>
+        </div>
+        <div class="card-actions">
+          <a href="https://tabibialam.kieda.online" target="_blank" class="card-open-btn" onclick="event.stopPropagation()">🏥 طبيبي</a>
+          <a id="maps-doctor" href="#" target="_blank" class="card-open-btn" onclick="event.stopPropagation()" style="display:none;">🗺️</a>
+          <span class="card-arrow" id="arrow-doctor">▼</span>
+        </div>
+      </div>
+      <div class="card-body" id="body-doctor"></div>
+    </div>
+
+    <!-- 🗣️ TRADUCTEUR -->
+    <div class="service-card">
+      <div class="card-header" onclick="toggleCard('translator')">
+        <div class="card-left">
+          <span class="card-icon">🗣️</span>
+          <div class="card-info">
+            <div class="card-title">مترجم صوتي</div>
+            <div class="card-nearest" id="nearest-translator">جارٍ البحث...</div>
+          </div>
+        </div>
+        <div class="card-actions">
+          <a href="https://moutarjem.kieda.online" target="_blank" class="card-open-btn" onclick="event.stopPropagation()">🗣️ مترجمي</a>
+          <a id="maps-translator" href="#" target="_blank" class="card-open-btn" onclick="event.stopPropagation()" style="display:none;">🗺️</a>
+          <span class="card-arrow" id="arrow-translator">▼</span>
+        </div>
+      </div>
+      <div class="card-body" id="body-translator"></div>
+    </div>
+
   </div>
 
   <!-- FOOTER -->
@@ -337,11 +451,11 @@ function startGPS(){
 }
 
 // ══ SEARCH 4 SERVICES ══
-const AMENITIES={mosque:'place_of_worship',pharmacy:'pharmacy',atm:'atm',fuel:'fuel'};
-const SERVICE_DATA={mosque:[],pharmacy:[],atm:[],fuel:[]};
+const AMENITIES={mosque:'place_of_worship',pharmacy:'pharmacy',atm:'atm',fuel:'fuel',vet:'veterinary',dentist:'dentist',bank:'bank',optician:'optician',doctor:'doctors',translator:'language_school'};
+const SERVICE_DATA={mosque:[],pharmacy:[],atm:[],fuel:[],vet:[],dentist:[],bank:[],optician:[],doctor:[],translator:[]};
 const RADII=[0.5,1,2,5,10,20];
 const ATM_KEYWORDS=['bank','banque','بنك','بنكة','poste','post','postal','بريد','crédit','credit','sgb','bna','stb','bh','attijari','zitouna','arab','amen','nationale','agricole','tunisienne','tunisie','bnp','société','caisse'];
-const DEFAULT_NAMES={mosque:'مسجد',pharmacy:'صيدلية',atm:'صراف آلي',fuel:'محطة وقود'};
+const DEFAULT_NAMES={mosque:'مسجد',pharmacy:'صيدلية',atm:'صراف آلي',fuel:'محطة وقود',vet:'عيادة بيطرية',dentist:'عيادة أسنان',bank:'بنك',optician:'محل بصريات',doctor:'عيادة طبية',translator:'مترجم'};
 
 function viewbox(lat,lon,r){const lD=r/111.32,oD=r/(111.32*Math.max(Math.cos(d2r(lat)),0.1));return`${(lon-oD).toFixed(5)},${(lat-lD).toFixed(5)},${(lon+oD).toFixed(5)},${(lat+lD).toFixed(5)}`;}
 
@@ -377,7 +491,7 @@ function normalizeResults(type,lat,lon,places){
   return items;
 }
 
-const _searchSeq={mosque:0,pharmacy:0,atm:0,fuel:0};
+const _searchSeq={mosque:0,pharmacy:0,atm:0,fuel:0,vet:0,dentist:0,bank:0,optician:0,doctor:0,translator:0};
 
 async function searchOne(type,lat,lon){
   const seq=++_searchSeq[type];
@@ -402,7 +516,7 @@ async function searchOne(type,lat,lon){
 }
 
 async function searchAll(lat,lon){
-  Promise.all(['mosque','pharmacy','atm','fuel'].map(t=>searchOne(t,lat,lon)));
+  Promise.all(['mosque','pharmacy','atm','fuel','vet','dentist','bank','optician','doctor','translator'].map(t=>searchOne(t,lat,lon)));
 }
 
 function updateCardLoading(type){
@@ -433,7 +547,7 @@ function toggleCard(type){
   const arrow=document.getElementById('arrow-'+type);
   const isOpen=body.classList.contains('open');
   // Close all
-  ['mosque','pharmacy','atm','fuel'].forEach(t=>{
+  ['mosque','pharmacy','atm','fuel','vet','dentist','bank','optician','doctor','translator'].forEach(t=>{
     document.getElementById('body-'+t).classList.remove('open');
     document.getElementById('arrow-'+t).classList.remove('open');
   });
