@@ -1,0 +1,65 @@
+{
+  "name": "LORD SYSTEM — نظام التنقل الذكي",
+  "short_name": "LORD SYSTEM",
+  "description": "نظام ملاحة ذكي لإيجاد أقرب الخدمات والمشاعر الدينية",
+  "start_url": "/",
+  "scope": "/",
+  "display": "standalone",
+  "orientation": "portrait-primary",
+  "theme_color": "#0a0500",
+  "background_color": "#0a0500",
+  "lang": "ar",
+  "dir": "rtl",
+  "icons": [
+    {
+      "src": "data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 192 192'%3E%3Crect fill='%230a0500' width='192' height='192'/%3E%3Crect x='16' y='16' width='160' height='160' rx='32' fill='%23e87722'/%3E%3Ctext x='96' y='110' font-family='Amiri,serif' font-size='56' fill='%23000' text-anchor='middle' font-weight='bold'%3E🧭%3C/text%3E%3C/svg%3E",
+      "sizes": "192x192",
+      "type": "image/svg+xml",
+      "purpose": "any"
+    },
+    {
+      "src": "data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 512 512'%3E%3Crect fill='%230a0500' width='512' height='512'/%3E%3Crect x='42' y='42' width='428' height='428' rx='85' fill='%23e87722'/%3E%3Ctext x='256' y='312' font-family='Amiri,serif' font-size='180' fill='%23000' text-anchor='middle' font-weight='bold'%3E🧭%3C/text%3E%3C/svg%3E",
+      "sizes": "512x512",
+      "type": "image/svg+xml",
+      "purpose": "any maskable"
+    }
+  ],
+  "screenshots": [
+    {
+      "src": "data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 540 720'%3E%3Crect fill='%230a0500' width='540' height='720'/%3E%3Crect x='20' y='40' width='500' height='640' rx='32' fill='%23150800' stroke='%23e87722' stroke-width='2'/%3E%3Ctext x='270' y='150' font-family='Amiri' font-size='48' fill='%23e87722' text-anchor='middle' font-weight='bold'%3ELORD SYSTEM%3C/text%3E%3Crect x='40' y='200' width='460' height='80' rx='16' fill='rgba(232,119,34,0.2)' stroke='%23e87722' stroke-width='1'/%3E%3Crect x='40' y='310' width='460' height='80' rx='16' fill='rgba(232,119,34,0.2)' stroke='%23e87722' stroke-width='1'/%3E%3Crect x='40' y='420' width='460' height='80' rx='16' fill='rgba(232,119,34,0.2)' stroke='%23e87722' stroke-width='1'/%3E%3C/svg%3E",
+      "sizes": "540x720",
+      "type": "image/svg+xml",
+      "form_factor": "narrow"
+    }
+  ],
+  "categories": ["navigation"],
+  "shortcuts": [
+    {
+      "name": "أقرب المساجد",
+      "short_name": "مساجد",
+      "description": "ابحث عن أقرب مسجد",
+      "url": "/?service=mosque",
+      "icons": [
+        {
+          "src": "data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 96 96'%3E%3Crect fill='%23e87722' width='96' height='96' rx='16'/%3E%3Ctext x='48' y='60' font-size='40' text-anchor='middle'%3E🕌%3C/text%3E%3C/svg%3E",
+          "sizes": "96x96",
+          "type": "image/svg+xml"
+        }
+      ]
+    },
+    {
+      "name": "أقرب المستشفيات",
+      "short_name": "مستشفيات",
+      "description": "ابحث عن أقرب مستشفى",
+      "url": "/?service=hospital",
+      "icons": [
+        {
+          "src": "data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 96 96'%3E%3Crect fill='%23e87722' width='96' height='96' rx='16'/%3E%3Ctext x='48' y='60' font-size='40' text-anchor='middle'%3E🏥%3C/text%3E%3C/svg%3E",
+          "sizes": "96x96",
+          "type": "image/svg+xml"
+        }
+      ]
+    }
+  ],
+  "prefer_related_applications": false
+}
