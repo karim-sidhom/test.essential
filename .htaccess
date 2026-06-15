@@ -1,0 +1,79 @@
+# LORD SYSTEM PWA - Apache Configuration (.htaccess)
+# Placez ce fichier dans le répertoire racine du serveur
+
+# Activation du mod_rewrite
+<IfModule mod_rewrite.c>
+  RewriteEngine On
+  RewriteBase /
+  
+  # Force HTTPS (décommenter si déployé en production)
+  # RewriteCond %{HTTPS} off
+  # RewriteRule ^(.*)$ https://%{HTTP_HOST}%{REQUEST_URI} [L,R=301]
+  
+  # Redirige les requêtes vers index.html pour SPA routing
+  RewriteCond %{REQUEST_FILENAME} !-f
+  RewriteCond %{REQUEST_FILENAME} !-d
+  RewriteRule . /index.html [L]
+</IfModule>
+
+# Compression gzip
+<IfModule mod_deflate.c>
+  AddOutputFilterByType DEFLATE text/html text/plain text/xml text/css text/javascript application/javascript application/json
+</IfModule>
+
+# Cache Headers pour les assets
+<FilesMatch "\.(jpg|jpeg|png|gif|ico|svg|webp)$">
+  Header set Cache-Control "max-age=31536000, public"
+  Header set Expires "Wed, 20 Jan 2038 04:14:07 GMT"
+</FilesMatch>
+
+<FilesMatch "\.(css|js|woff|woff2|ttf|eot)$">
+  Header set Cache-Control "max-age=31536000, public"
+</FilesMatch>
+
+# Cache court pour HTML (car le contenu peut changer)
+<FilesMatch "\.html$">
+  Header set Cache-Control "max-age=3600, must-revalidate"
+</FilesMatch>
+
+# Configuration pour manifest.json
+<FilesMatch "\.json$">
+  Header set Content-Type "application/json"
+  Header set Cache-Control "max-age=3600, must-revalidate"
+</FilesMatch>
+
+# Configuration pour Service Worker
+<FilesMatch "^sw\.js$">
+  Header set Cache-Control "max-age=3600, must-revalidate"
+  Header set Service-Worker-Allowed "/"
+  AddType application/javascript .js
+</FilesMatch>
+
+# MIME types
+AddType application/manifest+json .webmanifest .manifest
+AddType application/json .json
+AddType image/svg+xml .svg
+AddType font/woff2 .woff2
+AddType font/woff .woff
+
+# Sécurité Headers
+Header set X-Content-Type-Options "nosniff"
+Header set X-Frame-Options "SAMEORIGIN"
+Header set X-XSS-Protection "1; mode=block"
+Header set Referrer-Policy "strict-origin-when-cross-origin"
+
+# CSP (Content Security Policy) - Adapter si nécessaire
+Header set Content-Security-Policy "default-src 'self'; script-src 'self' 'unsafe-inline' https://cdn.jsdelivr.net https://fonts.googleapis.com; style-src 'self' 'unsafe-inline' https://fonts.googleapis.com https://cdn.jsdelivr.net; font-src 'self' https://fonts.gstatic.com; img-src 'self' data: https:; connect-src 'self' https:; frame-ancestors 'self';"
+
+# Permissions Policy (Permissions-Policy)
+Header set Permissions-Policy "geolocation=(self), microphone=(), camera=(), payment=()"
+
+# Prevent access to sensitive files
+<FilesMatch "\.(env|config|htaccess|sql|log)$">
+  Order Allow,Deny
+  Deny from all
+</FilesMatch>
+
+# 404 and 500 error pages
+ErrorDocument 404 /index.html
+ErrorDocument 500 "Erreur serveur. Veuillez réessayer plus tard."

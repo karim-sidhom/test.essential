@@ -1,0 +1,48 @@
+{
+  "name": "lord-system-pwa",
+  "version": "1.0.0",
+  "description": "LORD SYSTEM — نظام التنقل الذكي — Progressive Web App",
+  "type": "module",
+  "main": "index.html",
+  "scripts": {
+    "dev": "python -m http.server 8000 --directory .",
+    "dev:node": "npx http-server -p 8000 -c-1 .",
+    "serve": "npx serve -p 8000 -s .",
+    "build": "echo 'No build required for static PWA'",
+    "test:lighthouse": "npx lighthouse http://localhost:8000 --view",
+    "test:pwa": "npx pwa-asset-generator ./public/icon.svg ./public --splash-only --type png",
+    "deploy:vercel": "vercel",
+    "deploy:netlify": "netlify deploy --prod",
+    "clean": "rm -rf .cache .next dist build"
+  },
+  "keywords": [
+    "PWA",
+    "Progressive Web App",
+    "Navigation",
+    "LORD SYSTEM",
+    "Arabic",
+    "Service Worker",
+    "Offline"
+  ],
+  "author": "LORD SYSTEM",
+  "license": "MIT",
+  "devDependencies": {
+    "http-server": "^14.1.1",
+    "serve": "^14.2.0",
+    "vercel": "^32.0.0",
+    "netlify-cli": "^17.0.0",
+    "lighthouse": "^10.0.0"
+  },
+  "engines": {
+    "node": ">=14.0.0",
+    "npm": ">=6.0.0"
+  },
+  "repository": {
+    "type": "git",
+    "url": "https://github.com/yourusername/lord-system-pwa"
+  },
+  "bugs": {
+    "url": "https://github.com/yourusername/lord-system-pwa/issues"
+  },
+  "homepage": "https://your-domain.com"
+}
