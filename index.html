@@ -170,13 +170,13 @@ body{font-family:'Tajawal',sans-serif;background:var(--deep);color:var(--text);m
     </div>
   </div>
 
-  <!-- ORATEUR ITINÉRAIRE INTELLIGENT -->
-  <button onclick="startItineraryListen()" id="itin-btn" style="width:100%;padding:14px;margin-bottom:10px;background:linear-gradient(135deg,rgba(232,119,34,0.12),rgba(232,119,34,0.04));border:2px solid rgba(232,119,34,0.4);color:var(--gold-bright);border-radius:50px;font-family:'Tajawal',sans-serif;font-size:15px;font-weight:800;cursor:pointer;box-shadow:0 0 16px rgba(232,119,34,0.1);letter-spacing:.5px;">
+  <!-- ORATEUR ITINÉRAIRE INTELLIGENT - AGRANDI -->
+  <button onclick="startItineraryListen()" id="itin-btn" style="width:100%;padding:22px;margin-bottom:20px;background:linear-gradient(135deg,rgba(232,119,34,0.18),rgba(232,119,34,0.08));border:2.5px solid rgba(232,119,34,0.6);color:var(--gold-bright);border-radius:50px;font-family:'Tajawal',sans-serif;font-size:18px;font-weight:900;cursor:pointer;box-shadow:0 0 25px rgba(232,119,34,0.25);letter-spacing:1px;transition:all 0.3s ease;">
     🗺️ مساري — Mon Itinéraire — My Route
   </button>
 
-  <!-- ORATEUR 3 LANGUES -->
-  <button onclick="speakResults()" style="width:100%;padding:14px;margin-bottom:16px;background:linear-gradient(135deg,rgba(232,119,34,0.18),rgba(232,119,34,0.05));border:2px solid rgba(232,119,34,0.55);color:var(--gold-bright);border-radius:50px;font-family:'Tajawal',sans-serif;font-size:15px;font-weight:800;cursor:pointer;box-shadow:0 0 20px rgba(232,119,34,0.15);letter-spacing:.5px;">
+  <!-- ORATEUR 3 LANGUES - MASQUÉ -->
+  <button onclick="speakResults()" style="display:none;width:100%;padding:14px;margin-bottom:16px;background:linear-gradient(135deg,rgba(232,119,34,0.18),rgba(232,119,34,0.05));border:2px solid rgba(232,119,34,0.55);color:var(--gold-bright);border-radius:50px;font-family:'Tajawal',sans-serif;font-size:15px;font-weight:800;cursor:pointer;box-shadow:0 0 20px rgba(232,119,34,0.15);letter-spacing:.5px;">
     🔊 سماع النتائج — Écouter — Listen
   </button>
 
@@ -633,12 +633,21 @@ async function initPrayer(lat,lon){
 }
 
 // ══ ORATEUR INTELLIGENT ══
-const SERVICE_TIME={mosque:20,pharmacy:10,atm:5,fuel:8};
+const SERVICE_TIME={
+  mosque:20,pharmacy:10,atm:5,fuel:8,
+  vet:25,dentist:30,bank:15,optician:20,doctor:25,translator:15
+};
 const SERVICE_NAMES={
   mosque:{ar:'صلاة',fr:'prier',en:'pray'},
   pharmacy:{ar:'شراء الأدوية',fr:'acheter des médicaments',en:'buy medicine'},
   atm:{ar:'سحب من الصراف',fr:'retirer de l\'argent',en:'withdraw cash'},
   fuel:{ar:'تعبية الوقود',fr:'faire le plein',en:'fill up'},
+  vet:{ar:'زيارة الطبيب البيطري',fr:'visite vétérinaire',en:'veterinary visit'},
+  dentist:{ar:'زيارة طبيب الأسنان',fr:'consultation dentaire',en:'dental appointment'},
+  bank:{ar:'معاملة بنكية',fr:'opération bancaire',en:'banking transaction'},
+  optician:{ar:'فحص النظر',fr:'visite chez l\'opticien',en:'eye examination'},
+  doctor:{ar:'زيارة الطبيب',fr:'consultation médicale',en:'doctor visit'},
+  translator:{ar:'خدمة الترجمة الصوتية',fr:'service de traduction',en:'translation service'}
 };
 
 // ── Avatar (cercle vidéo affiché pendant que l'app parle) ──
@@ -703,7 +712,7 @@ function speakResults(){
   if(!window.speechSynthesis){alert('الصوت غير مدعوم');return;}
 
   // Check which services have results
-  const available=['mosque','pharmacy','atm','fuel'].filter(t=>SERVICE_DATA[t]&&SERVICE_DATA[t].length>0);
+  const available=['mosque','pharmacy','atm','fuel','vet','dentist','bank','optician','doctor','translator'].filter(t=>SERVICE_DATA[t]&&SERVICE_DATA[t].length>0);
   if(!available.length){
     const u=new SpeechSynthesisUtterance('لا توجد بيانات بعد. انتظر تحديد الموقع.');
     u.lang='ar-SA';window.speechSynthesis.speak(u);return;
@@ -789,43 +798,55 @@ function toggleLite(){
 
 function renderLiteView(){
   const liteView=document.getElementById('lite-view');
-  const ICONS={mosque:'🕌',pharmacy:'💊',atm:'🏧',fuel:'⛽'};
-  const TITLES={mosque:'المسجد الأقرب',pharmacy:'الصيدلية الأقرب',atm:'الصرّاف الأقرب',fuel:'محطة الوقود الأقرب'};
-  const APPS={mosque:'https://salati.kieda.online',pharmacy:'https://saydaliati.kieda.online',atm:'https://dabi.kieda.online',fuel:'https://mahattati.kieda.online'};
+  const ICONS={mosque:'🕌',pharmacy:'💊',atm:'🏧',fuel:'⛽',vet:'🐾',dentist:'🦷',bank:'💳',optician:'👁️',doctor:'🏥',translator:'🗣️'};
+  const TITLES={mosque:'المسجد الأقرب',pharmacy:'الصيدلية الأقرب',atm:'الصرّاف الأقرب',fuel:'محطة الوقود الأقرب',vet:'الطبيب البيطري الأقرب',dentist:'طبيب الأسنان الأقرب',bank:'البنك الأقرب',optician:'الخدمات البصرية الأقرب',doctor:'الطبيب العام الأقرب',translator:'مترجم صوتي'};
+  const APPS={mosque:'https://salati.kieda.online',pharmacy:'https://saydaliati.kieda.online',atm:'https://dabi.kieda.online',fuel:'https://mahattati.kieda.online',vet:'https://albaytari.kieda.online',dentist:'https://dentiste.kieda.online',bank:'https://masrifi.kieda.online',optician:'https://nadharatioptic.kieda.online',doctor:'https://tabibialam.kieda.online',translator:'https://moutarjem.kieda.online'};
 
-  liteView.innerHTML=['mosque','pharmacy','atm','fuel'].map(type=>{
+  liteView.innerHTML=['mosque','pharmacy','atm','fuel','vet','dentist','bank','optician','doctor','translator'].map(type=>{
     const items=SERVICE_DATA[type]||[];
     const n=items[0];
     if(!n)return`<div style="background:var(--card);border:1.5px solid rgba(232,119,34,0.2);border-radius:14px;padding:16px;display:flex;align-items:center;gap:14px;opacity:.4;"><span style="font-size:26px">${ICONS[type]}</span><span style="font-family:'Amiri',serif;font-size:16px;color:var(--text-dim);">لا توجد نتائج</span></div>`;
-    return`<div style="background:linear-gradient(135deg,rgba(180,90,10,0.15),rgba(232,119,34,0.06));border:1.5px solid var(--gold-bright);border-radius:14px;padding:16px;box-shadow:0 4px 15px rgba(0,0,0,0.5),0 0 12px rgba(232,119,34,0.12);">
-      <div style="display:flex;align-items:center;gap:12px;margin-bottom:10px;">
-        <span style="font-size:26px;">${ICONS[type]}</span>
+    return`<div style="background:linear-gradient(135deg,rgba(180,90,10,0.15),rgba(232,119,34,0.06));border:2px solid var(--gold-bright);border-radius:16px;padding:24px;margin-bottom:12px;box-shadow:0 6px 20px rgba(0,0,0,0.6),0 0 16px rgba(232,119,34,0.2);">
+      <div style="display:flex;align-items:center;gap:16px;margin-bottom:14px;">
+        <span style="font-size:40px;">${ICONS[type]}</span>
         <div style="flex:1;">
-          <div style="font-size:11px;color:var(--text-dim);font-family:'DM Mono',monospace;letter-spacing:1px;">${TITLES[type]}</div>
-          <div style="font-family:'Amiri',serif;font-size:20px;font-weight:700;color:var(--gold-shine);text-shadow:0 0 8px rgba(232,119,34,0.3);">${n.name}</div>
-          <div style="font-size:12px;color:rgba(200,140,60,0.7);font-family:'DM Mono',monospace;">📍 ${fmtDist(n.dist)}</div>
+          <div style="font-size:12px;color:var(--text-dim);font-family:'DM Mono',monospace;letter-spacing:1px;text-transform:uppercase;">${TITLES[type]}</div>
+          <div style="font-family:'Amiri',serif;font-size:26px;font-weight:700;color:var(--gold-shine);text-shadow:0 0 8px rgba(232,119,34,0.4);line-height:1.4;">${n.name}</div>
+          <div style="font-size:14px;color:rgba(200,140,60,0.8);font-family:'DM Mono',monospace;margin-top:4px;">📍 ${fmtDist(n.dist)}</div>
         </div>
       </div>
-      <div style="display:flex;gap:8px;">
-        <a href="https://www.google.com/maps/dir/?api=1&destination=${n.lat},${n.lon}" target="_blank" style="flex:1;padding:9px;border-radius:9px;font-size:13px;font-weight:800;background:linear-gradient(135deg,rgba(232,119,34,0.22),rgba(232,119,34,0.08));border:1.5px solid var(--gold-bright);color:var(--gold-bright);text-decoration:none;font-family:'Tajawal',sans-serif;text-align:center;">🧭 توجيه</a>
-        <a href="${APPS[type]}" target="_blank" style="flex:1;padding:9px;border-radius:9px;font-size:13px;font-weight:700;background:rgba(232,119,34,0.04);border:1px solid rgba(232,119,34,0.3);color:rgba(200,140,60,0.8);text-decoration:none;font-family:'Tajawal',sans-serif;text-align:center;">📱 App</a>
+      <div style="display:flex;gap:10px;">
+        <a href="https://www.google.com/maps/dir/?api=1&destination=${n.lat},${n.lon}" target="_blank" style="flex:1;padding:12px;border-radius:10px;font-size:15px;font-weight:800;background:linear-gradient(135deg,rgba(232,119,34,0.22),rgba(232,119,34,0.08));border:1.5px solid var(--gold-bright);color:var(--gold-bright);text-decoration:none;font-family:'Tajawal',sans-serif;text-align:center;">🧭 توجيه</a>
+        <a href="${APPS[type]}" target="_blank" style="flex:1;padding:12px;border-radius:10px;font-size:15px;font-weight:700;background:rgba(232,119,34,0.04);border:1.5px solid rgba(232,119,34,0.4);color:rgba(200,140,60,0.9);text-decoration:none;font-family:'Tajawal',sans-serif;text-align:center;">📱 App</a>
       </div>
     </div>`;
   }).join('');
 }
 // ══ ORATEUR ITINÉRAIRE — reconnaissance vocale ══
-const ITIN_TIME={mosque:20,pharmacy:10,atm:5,fuel:8};
+const ITIN_TIME={mosque:20,pharmacy:10,atm:5,fuel:8,vet:25,dentist:30,bank:15,optician:20,doctor:25,translator:15};
 const ITIN_NAMES={
   mosque:{ar:'الصلاة',fr:'prier',en:'pray'},
   pharmacy:{ar:'شراء الأدوية',fr:'acheter des médicaments',en:'buy medicine'},
   atm:{ar:'سحب من الصراف',fr:"retirer de l'argent",en:'withdraw cash'},
   fuel:{ar:'تعبية الوقود',fr:'faire le plein',en:'fill up'},
+  vet:{ar:'زيارة الطبيب البيطري',fr:'visite vétérinaire',en:'veterinary visit'},
+  dentist:{ar:'زيارة طبيب الأسنان',fr:'consultation dentaire',en:'dental appointment'},
+  bank:{ar:'معاملة بنكية',fr:'opération bancaire',en:'banking transaction'},
+  optician:{ar:'فحص النظر',fr:'visite chez l\'opticien',en:'eye examination'},
+  doctor:{ar:'زيارة الطبيب',fr:'consultation médicale',en:'doctor visit'},
+  translator:{ar:'خدمة الترجمة الصوتية',fr:'service de traduction',en:'translation service'},
 };
 const ITIN_KEYWORDS={
   mosque:['صلاة','مسجد','نصلي','prier','prière','mosque','pray','prayer'],
-  pharmacy:['دواء','صيدلية','médicament','pharmacie','medicine','pharmacy'],
-  atm:['فلوس','صراف','argent','distributeur','atm','cash','money'],
+  pharmacy:['دواء','صيدلية','ادوية','médicament','pharmacie','medicine','pharmacy'],
+  atm:['فلوس','صراف','سحب','argent','distributeur','atm','cash','money'],
   fuel:['بنزين','وقود','تعبية','essence','plein','fuel','gas','station'],
+  vet:['بيطري','حيوان','طبيب بيطري','vétérinaire','veterinary','vet','pet'],
+  dentist:['أسنان','طبيب أسنان','dentiste','dental','dentist','tooth'],
+  bank:['بنك','مصرف','معاملة بنكية','banque','banking','bank','account'],
+  optician:['نظر','نظارات','عينين','opticien','optical','optician','glasses','eyes'],
+  doctor:['طبيب','طبيب عام','صحة','médecin','doctor','medical','physician','health'],
+  translator:['ترجمة','مترجم','صوتي','traduction','traducteur','translation','translator','language'],
 };
 
 let itinListening=false;
@@ -919,7 +940,7 @@ function processItineraryVoice(text){
   // If none detected, use all available
   const avail=requested.length>0
     ?requested.filter(t=>SERVICE_DATA[t]&&SERVICE_DATA[t].length)
-    :['mosque','pharmacy','atm','fuel'].filter(t=>SERVICE_DATA[t]&&SERVICE_DATA[t].length);
+    :['mosque','pharmacy','atm','fuel','vet','dentist','bank','optician','doctor','translator'].filter(t=>SERVICE_DATA[t]&&SERVICE_DATA[t].length);
 
   if(!avail.length){
     const u=new SpeechSynthesisUtterance('لا توجد بيانات بعد. انتظر تحديد الموقع.');
