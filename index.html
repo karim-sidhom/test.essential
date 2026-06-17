@@ -387,7 +387,8 @@ body{font-family:'Tajawal',sans-serif;background:var(--deep);color:var(--text);m
 // ══ GPS — copié de mahattati ══
 const d2r=d=>d*Math.PI/180;
 let currentLat=null,currentLng=null,gpsWatchId=null;
-const GPS_ACC=2000,GPS_AGE=60000,GPS_DIST=0.05;
+let lastSearchTs=0;
+const GPS_ACC=2000,GPS_AGE=60000,GPS_DIST=0.3,SEARCH_COOLDOWN_MS=15000;
 const GPS_OPT={enableHighAccuracy:true,timeout:20000,maximumAge:0};
 
 function haversineKm(a,b,c,e){const R=6371,dL=d2r(c-a),dO=d2r(e-b),x=Math.sin(dL/2)**2+Math.cos(d2r(a))*Math.cos(d2r(c))*Math.sin(dO/2)**2;return R*2*Math.atan2(Math.sqrt(x),Math.sqrt(1-x));}
@@ -410,12 +411,19 @@ function applyGps(pos){
   const at=Number.isFinite(acc)?Math.round(acc)+'م':'?';
   const has=Number.isFinite(currentLat)&&Number.isFinite(currentLng);
   const dist=has?haversineKm(currentLat,currentLng,nl,no):Infinity;
-  if(!has||dist>GPS_DIST){
+  // مهم: نحدث نقطة الـGPS المعروضة دائماً، لكن لا نعيد تشغيل البحث إلا إذا تحركنا مسافة كافية
+  // وانقضى وقت كافٍ منذ آخر بحث، لمنع توقف البحث الجاري بسبب تذبذب دقة الـGPS
+  document.getElementById('gps-dot').className='gps-dot';
+  document.getElementById('gps-txt').textContent=`📍 ${nl.toFixed(4)}, ${no.toFixed(4)} · دقة ${at}`;
+  const now=Date.now();
+  const cooldownPassed=(now-lastSearchTs)>=SEARCH_COOLDOWN_MS;
+  if(!has||(dist>GPS_DIST&&cooldownPassed)){
     currentLat=nl;currentLng=no;
-    document.getElementById('gps-dot').className='gps-dot';
-    document.getElementById('gps-txt').textContent=`📍 ${nl.toFixed(4)}, ${no.toFixed(4)} · دقة ${at}`;
+    lastSearchTs=now;
     searchAll(nl,no);
     initPrayer(nl,no);
+  }else if(!has){
+    currentLat=nl;currentLng=no;
   }
 }
 
@@ -492,8 +500,18 @@ function normalizeResults(type,lat,lon,places){
 }
 
 const _searchSeq={mosque:0,pharmacy:0,atm:0,fuel:0,vet:0,dentist:0,bank:0,optician:0,doctor:0,translator:0};
+const _lastSearchPos={}; // يحفظ آخر موقع تم البحث فيه بنجاح لكل قسم
 
-async function searchOne(type,lat,lon){
+async function searchOne(type,lat,lon,force){
+  // إذا كان لدى هذا القسم نتيجة سابقة عند موقع قريب جداً من الموقع الحالي، لا نعيد البحث من الصفر
+  // هذا يحل مشكلة: عند تكرار GPS لنفس الموقع تقريباً، يجب أن يتوقف البحث لهذا القسم بمجرد العثور على نتيجة ويستمر في الأقسام الأخرى
+  if(!force&&SERVICE_DATA[type]&&SERVICE_DATA[type].length>0&&_lastSearchPos[type]){
+    const movedKm=haversineKm(_lastSearchPos[type].lat,_lastSearchPos[type].lon,lat,lon);
+    if(movedKm<GPS_DIST){
+      // النتيجة الحالية لا تزال صالحة لهذا الموقع، لا حاجة لإعادة البحث
+      return;
+    }
+  }
   const seq=++_searchSeq[type];
   updateCardLoading(type);
   for(let i=0;i<RADII.length;i++){
@@ -508,15 +526,24 @@ async function searchOne(type,lat,lon){
       clearTimeout(tid);
       if(seq!==_searchSeq[type])return;
       const items=normalizeResults(type,lat,lon,places).filter(m=>m.dist<=r);
-      if(items.length>0){SERVICE_DATA[type]=items;updateCard(type,items);return;}
+      if(items.length>0){
+        SERVICE_DATA[type]=items;
+        _lastSearchPos[type]={lat,lon};
+        updateCard(type,items);
+        return; // يتوقف البحث لهذا القسم فوراً عند العثور على نتيجة، ويستمر تنفيذ الأقسام الأخرى بشكل مستقل عبر Promise.all
+      }
     }catch(e){if(seq!==_searchSeq[type])return;}
     await new Promise(r=>setTimeout(r,300));
   }
-  if(seq===_searchSeq[type]){SERVICE_DATA[type]=[];updateCard(type,[]);}
+  if(seq===_searchSeq[type]){
+    SERVICE_DATA[type]=[];
+    _lastSearchPos[type]={lat,lon};
+    updateCard(type,[]);
+  }
 }
 
-async function searchAll(lat,lon){
-  Promise.all(['mosque','pharmacy','atm','fuel','vet','dentist','bank','optician','doctor','translator'].map(t=>searchOne(t,lat,lon)));
+async function searchAll(lat,lon,force){
+  Promise.all(['mosque','pharmacy','atm','fuel','vet','dentist','bank','optician','doctor','translator'].map(t=>searchOne(t,lat,lon,force)));
 }
 
 function updateCardLoading(type){
@@ -875,14 +902,16 @@ function startItineraryListen(){
   itinRecognition.onresult=function(e){
     const text=e.results[0][0].transcript;
     stopItineraryListen();
-    // Confirm heard
-    try{window.speechSynthesis.cancel();
-      const conf=new SpeechSynthesisUtterance('سمعتك. ');
-      conf.lang='ar-SA';conf.rate=0.88;
-      conf.onend=()=>processItineraryVoice(text);
-      conf.onerror=()=>processItineraryVoice(text);
+    // مهم: لا نعتمد على onend/onerror لرسالة "سمعتك" لأنها غير مضمونة على كل المتصفحات (خصوصاً الموبايل)
+    // وقد لا تُستدعى أبداً، فيبقى المتحدث صامتاً تماماً دون أي نتيجة. نستدعي المعالجة فوراً
+    // ونحاول عرض "سمعتك" بشكل غير معطّل (non-blocking) في الخلفية فقط كتأكيد سريع.
+    try{
+      window.speechSynthesis.cancel();
+      const conf=new SpeechSynthesisUtterance('سمعتك.');
+      conf.lang='ar-SA';conf.rate=0.95;
       window.speechSynthesis.speak(conf);
-    }catch(_){processItineraryVoice(text);}
+    }catch(_){}
+    processItineraryVoice(text);
   };
   itinRecognition.onerror=function(e){
     stopItineraryListen();
@@ -943,13 +972,20 @@ function processItineraryVoice(text){
     :['mosque','pharmacy','atm','fuel','vet','dentist','bank','optician','doctor','translator'].filter(t=>SERVICE_DATA[t]&&SERVICE_DATA[t].length);
 
   if(!avail.length){
-    const u=new SpeechSynthesisUtterance('لا توجد بيانات بعد. انتظر تحديد الموقع.');
-    u.lang='ar-SA';window.speechSynthesis.speak(u);return;
+    // نستخدم playSpeech بدلاً من speechSynthesis.speak المباشر لأنه أكثر موثوقية على المتصفحات المختلفة
+    showAvatar();
+    playSpeech([{text:'لا توجد بيانات بعد. انتظر تحديد الموقع أو حاول مرة أخرى بعد قليل.',lang:'ar-SA',rate:0.9}],hideAvatar);
+    return;
   }
+
+  // إذا لم يتم تحديد موقع GPS بعد، نستخدم نقطة البداية كأول نتيجة بدلاً من قيم فارغة (null)
+  // لمنع ظهور قيم NaN في حساب المسافة والوقت
+  const hasGps=Number.isFinite(currentLat)&&Number.isFinite(currentLng);
+  let prevLat=hasGps?currentLat:avail.length?SERVICE_DATA[avail[0]][0].lat:0;
+  let prevLon=hasGps?currentLng:avail.length?SERVICE_DATA[avail[0]][0].lon:0;
 
   // Calculate time sequentially - from each stop to the next
   let totalMin=0;
-  let prevLat=currentLat,prevLon=currentLng;
   const stepTimes=avail.map(type=>{
     const n=SERVICE_DATA[type][0];
     const dist=haversineKm(prevLat,prevLon,n.lat,n.lon);
